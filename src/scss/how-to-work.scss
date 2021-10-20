@@ -1,0 +1,29 @@
+.how-to-work {
+    position: relative;
+
+    &__content {
+        margin-left: 10em;
+
+        p {
+            width: 30em; // Поправить
+        }
+    }
+
+    &__img {
+        position: absolute;
+        top: 15em;
+        left: -2em;
+        z-index: -1;
+
+        .text-description {
+            width: 10em;
+            transform: rotate(-20deg);
+        }
+
+        .img-wrapper {
+            img {
+                width: 16em;
+            }
+        }
+    }
+}

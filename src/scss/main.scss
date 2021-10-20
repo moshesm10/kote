@@ -1,36 +1,40 @@
-@font-face {
-    font-family: 'als-gorizont';
-    font-display: fallback;
-    src: url('../fonts/ALSGorizont2.1-BoldExpanded.woff2') format('woff2'),
-    url('../fonts/ALSGorizont2.1-BoldExpanded.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
+@import './variables';
+@import './fonts';
+@import './hero';
+@import './how-to-work';
+@import './appeal';
+@import './what-next';
+@import './revolution';
+@import './not-exactly';
+@import './when';
+@import './wait';
+@import './snake';
+@import './form';
+@import './copyright';
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 0vw;
+    font-size: clamp(8px, 1vw, 35px);
 }
 
-@font-face {
-    font-family: 'als-gorizont';
-    font-display: fallback;
-    src: url('../fonts/ALSGorizont2.1-ExtraBoldExpanded.woff2') format('woff2'),
-    url('../fonts/ALSGorizont2.1-ExtraBoldExpanded.woff') format('woff');
-    font-weight: 800;
-    font-style: normal;
+.container {
+    max-width: 1240px;
+    margin: 1em auto;
+    padding: 2em;
 }
 
-@font-face {
-    font-family: 'als-hauss-mono';
-    font-display: fallback;
-    src: url('../fonts/ALSHaussMono-Regular.woff2') format('woff2'),
-    url('../fonts/ALSHaussMono-Regular.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
+.container-wide {
+    margin: 5em auto;
 }
-
-$gray-text: #c0c0c0;
 
 h1 {
     font-family: 'als-gorizont', sans-serif;
     font-weight: 700;
     font-size: 10em;
+    margin-bottom: 0;
+    line-height: 1.1;
 }
 
 p {
@@ -43,8 +47,19 @@ h2 {
     font-family: 'als-gorizont', sans-serif;
     font-weight: 700;
     font-size: 10em;
-    color: #FFFFFF;
+    margin-bottom: 0;
+    line-height: 1.1;
+}
 
+.white {
+    color: #fff;
+}
+
+.black {
+    color: #000;
+}
+
+.border {
     -webkit-text-stroke: .025em #000;
 }
 

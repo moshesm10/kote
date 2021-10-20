@@ -1,0 +1,33 @@
+.revolution {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 7em;
+    background-color: #CC0000;
+    
+    
+    &__content {
+        z-index: 10;
+
+        h2 {
+            font-size: 5em;
+            margin-top: 2em;
+        }
+
+        p {
+            margin-left: 20%;
+            color: #fff;
+            max-width: 60%;
+        }
+    }
+
+    &__img {
+        transform: translateX(8em);
+        z-index: 0;
+
+        img {
+            width: 30em;
+        }
+    }
+
+}

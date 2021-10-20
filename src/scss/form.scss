@@ -1,0 +1,12 @@
+.form {
+    &__wrapper {
+        p {
+            max-width: 55%;
+            margin-bottom: 2em;
+        }
+
+        form {
+            display: flex;
+        }
+    }
+}

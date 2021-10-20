@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'als-gorizont';
+    font-display: fallback;
+    src: url('../fonts/ALSGorizont2.1-BoldExpanded.woff2') format('woff2'),
+    url('../fonts/ALSGorizont2.1-BoldExpanded.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'als-gorizont';
+    font-display: fallback;
+    src: url('../fonts/ALSGorizont2.1-ExtraBoldExpanded.woff2') format('woff2'),
+    url('../fonts/ALSGorizont2.1-ExtraBoldExpanded.woff') format('woff');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'als-hauss-mono';
+    font-display: fallback;
+    src: url('../fonts/ALSHaussMono-Regular.woff2') format('woff2'),
+    url('../fonts/ALSHaussMono-Regular.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}

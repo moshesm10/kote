@@ -1,0 +1,32 @@
+.copyright {
+    &__wrapper {
+        display: flex;
+        margin-top: 3em;
+
+        img {
+            width: 10em;
+            margin-right: 1.5em;
+        }
+    }
+
+    &__text {
+        font-family: 'als-hauss-mono', sans-serif;
+        color: #333333;
+
+        span {
+            font-size: 1.4em;
+            display: block;
+        }
+
+        a,
+        a:visited {
+            color: #333333;
+            border-color: #333333;
+        }
+
+        a:hover {
+            opacity: .7;
+            transition: .5s;
+        }
+    }
+}

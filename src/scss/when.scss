@@ -1,0 +1,67 @@
+.when {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__content,
+    &__animation {
+        flex: 1;
+    }
+
+    &__content {
+        h2 {
+            margin-top: 0;
+            margin-right: 1em;
+            font-size: 8em;
+        }
+    }
+
+    &__animation {
+        position: relative;
+
+        img {
+            position: absolute;
+            top: 4.5em;
+            left: 7em;
+            width: 17em;
+        }
+
+        svg {
+            width: 30em;
+            animation: rotation 10s linear infinite;
+        }
+    }
+
+    .cote-animate {
+        animation: slideUpDown 3s ease-in-out infinite;
+    }
+
+    @media (max-width: $screen-640) {
+        flex-direction: column;
+
+        &__animation {
+            margin-top: 5em;
+        }
+    }
+}
+
+@keyframes slideUpDown {
+    0% {
+        transform: translateY(0em)
+    }
+    50% {
+        transform: translateY(1em)
+    }
+    100% {
+        transform: translateY(0em)
+    }
+}
+
+@keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }

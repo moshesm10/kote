@@ -8,15 +8,130 @@
     <title>Kote</title>
 </head>
 <body>
-    <img src="./img/kote-logo.svg" alt="" srcset="">
-    <h1>Что такое котé?</h1>
-    <img src="./img/kote-cover.gif" alt="" srcset="">
-    <img src="./img/catbat41.gif" alt="" srcset="">
-    <p>Пока не ясно...</p>
-    <h2>Как работает котé?</h2>
-    <button class="button button-gray">призвать котé</button>
-    <button class="button button-black">отправить</button>
-    <input class="email" type="email" name="email" id="email" placeholder="электропочта">
+    <!-- Header -->
+    <header class="container">
+        <img src="./img/kote-logo.svg" alt="" srcset="">
+    </header>
+    <!-- /Header -->
+    <!-- Hero -->
+    <div class="container hero">
+        <div class="hero__content">
+            <h1>Что<br>такое<br>котé?</h1>
+            <p>Пока не ясно...</p>
+        </div>
+        <div class="hero__img">
+            <img src="./img/kote-cover.gif" alt="" srcset="">
+        </div>
+    </div>
+    <!-- /Hero -->
+    <!-- How to work -->
+    <div class="container how-to-work">
+        <div class="how-to-work__content">
+            <h2 class="border white">Как<br>работает<br>котé?</h2>
+            <p>Пока не ясно. Но, может быть, из за него подорожают видяхи.</p>
+        </div>
+        <div class="how-to-work__img">
+            <div class="text-description">
+                <p>ъуъ цифровое сресштво обмена</p>
+            </div>
+            <div class="img-wrapper">
+                <img src="./img/sua.gif" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- /How to work -->
+    <!-- Appeal -->
+    <div class="container-wide appeal">
+        <div class="appeal__video-wrapper">
+            <video class="appeal__video main-video hidden" src="./img/batcat.mp4" muted="1" loop="1" autoplay="1"></video>
+            <video class="appeal__video accent-video" src="./img/batcat-clear.mp4" muted="1" loop="1" autoplay="1"></video>
+        </div>
+        <div class="button-wrapper">
+            <button class="button appeal__button button-gray">призвать котé</button>
+        </div>
+    </div>
+    <!-- /Appeal -->
+    <!-- What's next -->
+    <div class="container whatnext">
+        <h2 class="border white">И че<br>дальше?</h2>
+    </div>
+    <!-- /What's next -->
+    <!-- Revolution -->
+    <div class="container-wide revolution">
+        <div class="revolution__content">
+            <h2 class="white">Hasta la koté, siempre!</h2>
+            <p>Вполне возможно, это будет че-то революционное.</p>
+        </div>
+        <div class="revolution__img">
+            <img src="./img/che.svg" alt="" srcset="">
+        </div>
+    </div>
+    <!-- /Revolution -->
+    <!-- Not exactly -->
+    <div class="container notexactly">
+        <div class="notexactly__content">
+            <video class="appeal__video accent-video" muted="1" loop="1" autoplay="1">
+                <source src="./img/catbox2.mp4" type="video/mp4">
+                <source src="./img/catbox2.webm" type="video/webm">
+            </video>
+            <p>Но это ваще не точно</p>
+        </div>
+    </div>
+    <!-- /Not exactly -->
+    <!-- When -->
+    <div class="container when">
+        <div class="when__content">
+            <h2 class="black">Когда придет котé?</h2>
+        </div>
+        <div class="when__animation">
+            <img class="cote-animate" src="./img/cote-waiting.svg" alt="" srcset="">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 400 400">
+                <defs>
+                  <path d="M0, 200a200, 200 0 1, 0 400, 0a200, 200 0 1, 0 -400, 0" id="txt-path"></path>
+                </defs>
+                <text fill="#000000" font-size="36" font-family="als-hauss-mono" font-weight="500">
+                    <textPath startOffset="0" xlink:href="#txt-path">цифровое средство обмена и что-то про котиков</textPath>
+                </text>
+            </svg>
+        </div>
+    </div>
+    <!-- /When -->
+    <!-- Wait -->
+    <div class="container wait">
+        <div class="wait__wrapper">
+            <h2 class="border white">Не знаею. Самжду</h2>
+            <img src="./img/mem.jpg" alt="" srcset="">
+        </div>
+    </div>
+    <!-- /Wait -->
+    <!-- Snake game -->
+    <div class="container-wide snake">
+
+    </div>
+    <!-- /Snake game -->
+    <!-- Form -->
+    <div class="container form">
+        <div class="form__wrapper">
+            <p>А можно отправить куда-то свою электропочту, и когда котé появится, кто-нибудь пришлет на нее уведомление.</p>
+            <form action="">
+                <input class="email" type="email" name="email" id="email" placeholder="электропочта">
+                <button class="button button-black">отправить</button>
+            </form>
+        </div>
+    </div>
+    <!-- /Form -->
+    <!-- Copyright -->
+    <div class="container copyright">
+        <div class="copyright__wrapper">
+            <img src="./img/ALS_logo.svg" alt="Логотип Cтудии Артемия Лебедева" srcset="">
+            <div class="copyright__text">
+                <span>Задизайнено в&nbsp;<a href="https://www.artlebedev.ru/">Студии Артемия Лебедева</a></span>
+                <span><a href="https://www.artlebedev.ru/">Информация о сайте</a></span>
+            </div>
+        </div>
+    </div>
+    <!-- /Copyright -->
+
     <script src="./js/bundle.js"></script>
 </body>
 </html>

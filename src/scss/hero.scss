@@ -1,0 +1,30 @@
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__content,
+    &__img {
+        flex: 1;
+    }
+
+    &__content {
+        margin-right: 2em;
+    }
+
+    &__img {
+        padding: 2em 0;
+
+        img {
+            width: 30em;
+        }
+    }
+
+    @media (max-width: $screen-640) {
+        flex-direction: column;
+
+        &__content {
+            margin-right: 0;
+        }
+    }
+}
