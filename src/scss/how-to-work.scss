@@ -16,13 +16,37 @@
         z-index: -1;
 
         .text-description {
-            width: 10em;
-            transform: rotate(-20deg);
+            p {
+                width: 7em;
+                transform: rotate(-20deg);
+            }
         }
 
         .img-wrapper {
             img {
                 width: 16em;
+            }
+        }
+    }
+
+    @media (max-width: $screen-640) {
+        &__content {
+            margin-left: 0;
+
+            p {
+                width: auto;
+            }
+        }
+
+        &__img {
+            position: initial;
+
+            .img-wrapper {
+                img {
+                    display: block;
+                    margin: 0 auto;
+                    width: 30em;
+                }
             }
         }
     }

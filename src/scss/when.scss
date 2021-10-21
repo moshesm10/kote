@@ -39,8 +39,23 @@
     @media (max-width: $screen-640) {
         flex-direction: column;
 
+        &__content {
+            h2 {
+                font-size: 6em;
+                margin-right: 0;
+            }
+        }
+
         &__animation {
             margin-top: 5em;
+
+            .cote-animate {
+                width: 14em;
+            }
+
+            svg {
+                width: 27em;
+            }
         }
     }
 }

@@ -30,4 +30,31 @@
         }
     }
 
+    @media (max-width: $screen-640) {
+        & {
+            flex-direction: column-reverse;
+            padding: 5em 1em;
+
+            &__content {
+                .white {
+                    margin-top: -2em;
+                }
+
+                p {
+                    margin-left: 0;
+                    max-width: 90%;
+                }
+            }
+
+            &__img {
+                transform: translateX(0em);
+
+                img {
+                    width: 30em;
+                    margin: 0 auto;
+                    display: block;
+                }
+            }
+        }
+    }
 }

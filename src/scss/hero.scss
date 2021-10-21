@@ -22,9 +22,14 @@
 
     @media (max-width: $screen-640) {
         flex-direction: column;
+        align-items: initial;
 
         &__content {
             margin-right: 0;
+        }
+
+        &__img {
+            align-self: center;
         }
     }
 }

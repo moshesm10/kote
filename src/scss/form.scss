@@ -7,6 +7,26 @@
 
         form {
             display: flex;
+
+            .email {
+                width: 100%;
+            }
+        }
+    }
+
+    @media (max-width: $screen-640) {
+        &__wrapper {
+            p {
+                max-width: 100%;
+            }
+    
+            form {
+                flex-direction: column;
+
+                .email {
+                    margin-bottom: 0.5em;
+                }
+            }
         }
     }
 }
