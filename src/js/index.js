@@ -1,4 +1,5 @@
 import startSnakeGame from './snake';
+import { disablePageScroll } from 'scroll-lock';
 
 const appealButton = document.querySelector('.appeal__button');
 const appealAccentVideo = document.querySelector('.accent-video');
@@ -20,7 +21,9 @@ appealButton.addEventListener('click', () => {
 });
 
 const snakeGameBlock = document.querySelector('.snake');
+
 snakeStartButton.addEventListener('click', () => {
-    snakeStartButton.classList.add('hidden');
+    snakeStartButton.style.display = 'none';
+    disablePageScroll();
     startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, true);
 });

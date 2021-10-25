@@ -2,17 +2,22 @@
     position: relative;
 
     &__content {
-        margin-left: 10em;
-
         p {
             width: 30em; // Поправить
+        }
+
+        .content__wrapper {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .content__text {
+            flex: 2;
         }
     }
 
     &__img {
-        position: absolute;
-        top: 15em;
-        left: -2em;
+        transform: translateX(2em) translateY(10em);
         z-index: -1;
 
         .text-description {
@@ -40,6 +45,9 @@
 
         &__img {
             position: initial;
+            width: 30em;
+            margin: 0 auto;
+            transform: initial;
 
             .img-wrapper {
                 img {
@@ -48,6 +56,10 @@
                     width: 30em;
                 }
             }
+        }
+
+        .content__wrapper {
+            flex-direction: column;
         }
     }
 }

@@ -1,3 +1,5 @@
+import { enablePageScroll } from 'scroll-lock';
+
 CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius, fill, stroke) {
     if (typeof stroke == "undefined" ) {
         stroke = true;
@@ -28,14 +30,26 @@ const startSnakeGame = (width, height, status) => {
 
     const canvas = document.getElementById('snake');
     const context = canvas.getContext('2d');
+    const snakeStartButton = document.querySelector('.snake__button');
+
+    // document.querySelector('body').style.overflow = 'hidden';
 
     let getClosestInteger = (a, b, x = Math.trunc(a / b)) => a > b ? !(a % b) ? a : (b * (x + 1) - a) < (a - b * x) ? b * (x + 1) : b * x : 'Некорректный ввод данных';
 
     // Размер одной клеточки на поле — 16 пикселей
-    const grid = 32;
+    let grid = 0;
+    let borderRadius = 0;
 
-    const canvasWidth = getClosestInteger(width, grid) - 32;
-    const canvasHeight = getClosestInteger(height, grid) - 32;
+    if (width > 675) {
+        grid = 32;
+        borderRadius = 20;
+    } else {
+        grid = 24;
+        borderRadius = 14;
+    }
+
+    const canvasWidth = getClosestInteger(width, grid) - grid;
+    const canvasHeight = getClosestInteger(height, grid) - grid;
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     
@@ -44,8 +58,8 @@ const startSnakeGame = (width, height, status) => {
 
     let snake = {
         // Начальные координаты
-        x: 160,
-        y: 160,
+        x: grid,
+        y: grid,
         // Скорость змейки — в каждом новом кадре змейка смещается по оси Х или У. На старте будет двигаться горизонтально, поэтому скорость по игреку равна нулю.
         dx: grid,
         dy: 0,
@@ -57,23 +71,24 @@ const startSnakeGame = (width, height, status) => {
         firstKeyEvent: 0
     };
 
-    // А это — еда (apple).
-    let apple = {
-        // Начальные координаты яблока
-        x: 320,
-        y: 320
-    };
-
     const getRandomInt = (min, max) => {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
+    // А это — еда (apple).
+    let apple = {
+        // Начальные координаты яблока
+        x: getRandomInt(0, canvasWidth / grid) * grid,
+        y: getRandomInt(0, canvasHeight / grid) * grid
+    };
+
     // Игровой цикл — основной процесс, внутри которого будет всё происходить
     const loop = () => {
         // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. Было 60 кадров в секунду, станет 15.
-        requestAnimationFrame(loop);
+        let requestAnimationFrameNum = requestAnimationFrame(loop);
+
         // Игровой код выполнится только один раз из четырёх, в этом и суть замедления кадров, а пока переменная count меньше четырёх, код выполняться не будет.
-        if (++count < 5) {
+        if (++count < 7) {
             return;
         }
         // Обнуляем переменную скорости
@@ -105,28 +120,28 @@ const startSnakeGame = (width, height, status) => {
         }
         // Рисуем еду — красное яблоко
         context.fillStyle = 'white';
-        context.roundRect(apple.x, apple.y, grid, grid, 20, 'white');
+        context.roundRect(apple.x, apple.y, grid, grid, borderRadius, 'white');
         // Одно движение змейки — один новый нарисованный квадратик 
         
         // Обрабатываем каждый элемент змейки
         snake.cells.forEach((cell, index) => {
         if (index == 0) {
             if (snake.firstKeyEvent == 0) {
-                context.roundRect(cell.x - (grid / 2), cell.y, grid, grid, 20, 'white');
+                context.roundRect(cell.x - (grid / 2), cell.y, grid, grid, borderRadius, 'white');
             } else {
                 if (snake.direction == 'left') {
-                    context.roundRect(cell.x + (grid / 2), cell.y, grid, grid, 20, 'white');
+                    context.roundRect(cell.x + (grid / 2), cell.y, grid, grid, borderRadius, 'white');
                 }
             }
 
             if (snake.direction == 'right') {
-                context.roundRect(cell.x - (grid / 2), cell.y, grid, grid, 20, 'white');
+                context.roundRect(cell.x - (grid / 2), cell.y, grid, grid, borderRadius, 'white');
             }
             if (snake.direction == 'top') {
-                context.roundRect(cell.x, cell.y + (grid / 2), grid, grid, 20, 'white');
+                context.roundRect(cell.x, cell.y + (grid / 2), grid, grid, borderRadius, 'white');
             }
             if (snake.direction == 'down') {
-                context.roundRect(cell.x, cell.y - (grid / 2), grid, grid, 20, 'white');
+                context.roundRect(cell.x, cell.y - (grid / 2), grid, grid, borderRadius, 'white');
             }
         } 
         // else if (index == (snake.cells.length - 1)) 
@@ -159,11 +174,15 @@ const startSnakeGame = (width, height, status) => {
                 // Ставим яблочко в случайное место
                 apple.x = getRandomInt(0, canvasWidth / grid) * grid;
                 apple.y = getRandomInt(0, canvasHeight/ grid) * grid;
+
+                cancelAnimationFrame(requestAnimationFrameNum);
+                enablePageScroll();
+                snakeStartButton.innerText = 'ещё раз'
             }
         }
         });
     }
-
+    let lastKey = 'right';
     // Смотрим, какие нажимаются клавиши, и реагируем на них нужным образом
     document.addEventListener('keydown', function (e) {
         // Дополнительно проверяем такой момент: если змейка движется, например, влево, то ещё одно нажатие влево или вправо ничего не поменяет — змейка продолжит двигаться в ту же сторону, что и раньше. Это сделано для того, чтобы не разворачивать весь массив со змейкой на лету и не усложнять код игры.
@@ -176,6 +195,8 @@ const startSnakeGame = (width, height, status) => {
             snake.dx = -grid;
             snake.dy = 0;
             snake.direction = 'left';
+            lastKey = 'left';
+            snake.firstKeyEvent = 1;
         }
         // Стрелка вверх
         else if (e.which === 38 && snake.dy === 0) {
@@ -184,6 +205,7 @@ const startSnakeGame = (width, height, status) => {
             snake.dx = 0;
             snake.direction = 'top';
             snake.firstKeyEvent = 1;
+            lastKey = 'top';
         }
         // Стрелка вправо
         else if (e.which === 39 && snake.dx === 0) {
@@ -192,6 +214,7 @@ const startSnakeGame = (width, height, status) => {
             snake.dy = 0;
             snake.direction = 'right';
             snake.firstKeyEvent = 1;
+            lastKey = 'right';
         }
         // Стрелка вниз
         else if (e.which === 40 && snake.dy === 0) {
@@ -200,6 +223,7 @@ const startSnakeGame = (width, height, status) => {
             snake.dx = 0;
             snake.direction = 'down';
             snake.firstKeyEvent = 1;
+            lastKey = 'down';
         }
     });
 
@@ -207,49 +231,51 @@ const startSnakeGame = (width, height, status) => {
     let finalPoint = 0;
 
     document.addEventListener('touchstart', function(event) {
-        if (status) {
-            event.preventDefault();
-            event.stopPropagation();
-            initialPoint = event.changedTouches[0];
-        }
+        initialPoint = event.changedTouches[0];
     }, false);
     
     document.addEventListener('touchend', function(event) {
-        if (status) {
-            event.preventDefault();
-            event.stopPropagation();
-            finalPoint = event.changedTouches[0];
-            const xAbs = Math.abs(initialPoint.pageX - finalPoint.pageX);
-            const yAbs = Math.abs(initialPoint.pageY - finalPoint.pageY);
-            if (xAbs > 20 || yAbs > 20) 
+        finalPoint = event.changedTouches[0];
+        const xAbs = Math.abs(initialPoint.pageX - finalPoint.pageX);
+        const yAbs = Math.abs(initialPoint.pageY - finalPoint.pageY);
+        if (xAbs > 10 || yAbs > 10) 
+        {
+            if (xAbs > yAbs) 
             {
-                if (xAbs > yAbs) 
-                {
-                    if (finalPoint.pageX < initialPoint.pageX) {
+                if (finalPoint.pageX < initialPoint.pageX) {
+                    if (lastKey !== 'right') {
                         snake.dx = -grid;
                         snake.dy = 0;
                         snake.direction = 'left';
-                    } else {
+                        lastKey = 'left';
+                    }
+                } else {
+                    if (lastKey !== 'left') {
                         snake.dx = grid;
                         snake.dy = 0;
                         snake.direction = 'right';
                         snake.firstKeyEvent = 1;
-                    };
-                }
-                else
-                {
-                    if(finalPoint.pageY < initialPoint.pageY) {
+                        lastKey = 'right';
+                    }
+                };
+            } else {
+                if (finalPoint.pageY < initialPoint.pageY) {
+                    if (lastKey !== 'down') {
                         snake.dy = -grid;
                         snake.dx = 0;
                         snake.direction = 'top';
                         snake.firstKeyEvent = 1;
-                    } else {
+                        lastKey = 'top';
+                    }
+                } else {
+                    if (lastKey !== 'top') {
                         snake.dy = grid;
                         snake.dx = 0;
                         snake.direction = 'down';
                         snake.firstKeyEvent = 1;
-                    };
-                }
+                        lastKey = 'down'
+                    }
+                };
             }
         }
     }, false);
