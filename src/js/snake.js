@@ -178,6 +178,7 @@ const startSnakeGame = (width, height, status) => {
                 cancelAnimationFrame(requestAnimationFrameNum);
                 enablePageScroll();
                 snakeStartButton.innerText = 'ещё раз'
+                snakeStartButton.style.display = '';
             }
         }
         });
