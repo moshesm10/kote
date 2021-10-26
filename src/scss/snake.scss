@@ -16,4 +16,19 @@
         top: 50%;
         transform: translateX(-50%);
     }
+
+    p {
+        position: absolute;
+        top: 1em;
+        left: 7em;
+        width: 40%;
+        color: #fff;
+        z-index: 10;
+    }
+
+    @media (max-width: $screen-640) {
+        p {
+            width: auto;
+        }
+    }
 }

@@ -1,22 +1,25 @@
 import { enablePageScroll } from 'scroll-lock';
 
-CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius, fill, stroke) {
+CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius1, radius2, radius3, radius4, fill, stroke) {
     if (typeof stroke == "undefined" ) {
         stroke = true;
     }
-    if (typeof radius === "undefined") {
-        radius = 5;
+    if (typeof radius1 === "undefined") {
+        radius1 = 5;
+        radius2 = 5;
+        radius3 = 5;
+        radius4 = 5;
     }
     this.beginPath();
-    this.moveTo(x + radius, y);
-    this.lineTo(x + width - radius, y);
-    this.quadraticCurveTo(x + width, y, x + width, y + radius);
-    this.lineTo(x + width, y + height - radius);
-    this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    this.lineTo(x + radius, y + height);
-    this.quadraticCurveTo(x, y + height, x, y + height - radius);
-    this.lineTo(x, y + radius);
-    this.quadraticCurveTo(x, y, x + radius, y);
+    this.moveTo(x + radius1, y);
+    this.lineTo(x + width - radius1, y);
+    this.quadraticCurveTo(x + width, y, x + width, y + radius1);
+    this.lineTo(x + width, y + height - radius2);
+    this.quadraticCurveTo(x + width, y + height, x + width - radius2, y + height);
+    this.lineTo(x + radius3, y + height);
+    this.quadraticCurveTo(x, y + height, x, y + height - radius3);
+    this.lineTo(x, y + radius4);
+    this.quadraticCurveTo(x, y, x + radius4, y);
     this.closePath();
     if (stroke) {
         this.stroke();
@@ -88,7 +91,7 @@ const startSnakeGame = (width, height, status) => {
         let requestAnimationFrameNum = requestAnimationFrame(loop);
 
         // Игровой код выполнится только один раз из четырёх, в этом и суть замедления кадров, а пока переменная count меньше четырёх, код выполняться не будет.
-        if (++count < 7) {
+        if (++count < 6) {
             return;
         }
         // Обнуляем переменную скорости
@@ -120,35 +123,59 @@ const startSnakeGame = (width, height, status) => {
         }
         // Рисуем еду — красное яблоко
         context.fillStyle = 'white';
-        context.roundRect(apple.x, apple.y, grid, grid, borderRadius, 'white');
+        // context.roundRect(apple.x, apple.y, grid, grid, 0, 0, 0, borderRadius + 5, 'white'); 2,3,4,1 четверь
+        context.beginPath();
+        context.arc(apple.x + (grid / 2), apple.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
+        context.fill();
+        context.closePath();
         // Одно движение змейки — один новый нарисованный квадратик 
         
         // Обрабатываем каждый элемент змейки
         snake.cells.forEach((cell, index) => {
         if (index == 0) {
             if (snake.firstKeyEvent == 0) {
-                context.roundRect(cell.x - (grid / 2), cell.y, grid, grid, borderRadius, 'white');
+                context.arc(cell.x, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
             } else {
                 if (snake.direction == 'left') {
-                    context.roundRect(cell.x + (grid / 2), cell.y, grid, grid, borderRadius, 'white');
+                    context.arc(cell.x + grid, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
                 }
             }
-
             if (snake.direction == 'right') {
-                context.roundRect(cell.x - (grid / 2), cell.y, grid, grid, borderRadius, 'white');
+                context.arc(cell.x, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
             }
             if (snake.direction == 'top') {
-                context.roundRect(cell.x, cell.y + (grid / 2), grid, grid, borderRadius, 'white');
+                context.arc(cell.x + (grid / 2), cell.y + grid, grid / 2, 0, 2 * Math.PI);
             }
             if (snake.direction == 'down') {
-                context.roundRect(cell.x, cell.y - (grid / 2), grid, grid, borderRadius, 'white');
+                context.arc(cell.x + (grid / 2), cell.y, grid / 2, 0, 2 * Math.PI);
             }
         } 
-        // else if (index == (snake.cells.length - 1)) 
+        else if (index == (snake.cells.length - 1)) {
+            const preCell = snake.cells[index - 1];
+            context.beginPath();
+            // right
+            if (preCell.x > cell.x && preCell.y === cell.y) {
+                context.arc(cell.x + grid, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
+            }
+            // left
+            if (preCell.x < cell.x && preCell.y === cell.y) {
+                context.arc(cell.x, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
+            }
+            // down
+            if (preCell.x === cell.x && preCell.y > cell.y) {
+                context.arc(cell.x + (grid / 2), cell.y + grid, grid / 2, 0, 2 * Math.PI);
+            }
+            // top
+            if (preCell.x === cell.x && preCell.y < cell.y) {
+                context.arc(cell.x + (grid / 2), cell.y, grid / 2, 0, 2 * Math.PI);
+            }
+            context.closePath();;
+        }
         else {
             context.fillRect(cell.x, cell.y, grid, grid);
         }
-        
+        context.fill();
+
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
             // увеличиваем длину змейки

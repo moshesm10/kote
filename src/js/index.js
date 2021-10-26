@@ -5,6 +5,7 @@ const appealButton = document.querySelector('.appeal__button');
 const appealAccentVideo = document.querySelector('.accent-video');
 const appealMainVideo = document.querySelector('.main-video');
 const snakeStartButton = document.querySelector('.snake__button');
+const snakeParagraph = document.querySelector('.snake__paragraph');
 
 appealButton.addEventListener('click', () => {
     appealButton.style.display = 'none';
@@ -24,6 +25,7 @@ const snakeGameBlock = document.querySelector('.snake');
 
 snakeStartButton.addEventListener('click', () => {
     snakeStartButton.style.display = 'none';
+    snakeParagraph.style.display = 'none';
     disablePageScroll();
     startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, true);
 });
