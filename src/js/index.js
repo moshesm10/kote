@@ -18,7 +18,7 @@ appealButton.addEventListener('click', () => {
 
         appealMainVideo.classList.add('hidden');
         appealMainVideo.classList.remove('active-video');
-    }, 10000)
+    }, 10000);
 });
 
 const snakeGameBlock = document.querySelector('.snake');
@@ -29,3 +29,27 @@ snakeStartButton.addEventListener('click', () => {
     disablePageScroll();
     startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, true);
 });
+
+window.onload = () => {
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const video = entry.target;
+
+                video.play();
+                observer.unobserve(video);
+            }
+        })
+    }, options);
+
+    const arr = document.querySelectorAll('video');
+    arr.forEach(i => {
+        observer.observe(i);
+    });
+};
