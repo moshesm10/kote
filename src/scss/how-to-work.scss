@@ -30,6 +30,7 @@
         .img-wrapper {
             img {
                 width: 16em;
+                filter: contrast(10);
             }
         }
     }

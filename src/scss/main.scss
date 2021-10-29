@@ -81,13 +81,26 @@ h2 {
 
     cursor: pointer;
 
+    -webkit-tap-highlight-color: transparent;
+
     &-gray {
         background: $gray-text;
+
+        &:hover {
+            transition: .5s;
+            background: $white;
+        }
     }
 
     &-black {
-        color: #fff;
+        color: $white;
         background: #000000;
+
+        &:hover {
+            transition: .5s;
+            color: #000000;
+            background: $gray-text;
+        }
     }
 }
 

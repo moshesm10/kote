@@ -6,6 +6,7 @@ const appealAccentVideo = document.querySelector('.accent-video');
 const appealMainVideo = document.querySelector('.main-video');
 const snakeStartButton = document.querySelector('.snake__button');
 const snakeParagraph = document.querySelector('.snake__paragraph');
+const formButton = document.querySelector('.form__button');
 
 appealButton.addEventListener('click', () => {
     appealButton.style.display = 'none';
@@ -28,6 +29,13 @@ snakeStartButton.addEventListener('click', () => {
     snakeParagraph.style.display = 'none';
     disablePageScroll();
     startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, true);
+});
+
+formButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    const formData = new FormData(document.forms[0]);
+    console.log(formData.get('email'));
+
 });
 
 window.onload = () => {

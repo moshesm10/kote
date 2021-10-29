@@ -1,39 +1,12 @@
 import { enablePageScroll } from 'scroll-lock';
 
-CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius1, radius2, radius3, radius4, fill, stroke) {
-    if (typeof stroke == "undefined" ) {
-        stroke = true;
-    }
-    if (typeof radius1 === "undefined") {
-        radius1 = 5;
-        radius2 = 5;
-        radius3 = 5;
-        radius4 = 5;
-    }
-    this.beginPath();
-    this.moveTo(x + radius1, y);
-    this.lineTo(x + width - radius1, y);
-    this.quadraticCurveTo(x + width, y, x + width, y + radius1);
-    this.lineTo(x + width, y + height - radius2);
-    this.quadraticCurveTo(x + width, y + height, x + width - radius2, y + height);
-    this.lineTo(x + radius3, y + height);
-    this.quadraticCurveTo(x, y + height, x, y + height - radius3);
-    this.lineTo(x, y + radius4);
-    this.quadraticCurveTo(x, y, x + radius4, y);
-    this.closePath();
-    if (stroke) {
-        this.stroke();
-    }
-    if (fill) {
-        this.fill();
-    }        
-}
-
 const startSnakeGame = (width, height, status) => {
 
     const canvas = document.getElementById('snake');
     const context = canvas.getContext('2d');
     const snakeStartButton = document.querySelector('.snake__button');
+    const img = new Image();   // Создаёт новый элемент изображения
+    img.src = '../img/test4.png'; // Устанавливает путь
 
     // document.querySelector('body').style.overflow = 'hidden';
 
@@ -44,11 +17,16 @@ const startSnakeGame = (width, height, status) => {
     let borderRadius = 0;
 
     if (width > 675) {
-        grid = 32;
+        grid = 48;
         borderRadius = 20;
     } else {
         grid = 24;
         borderRadius = 14;
+    }
+
+    const addTileToCanvas = (tpx, tpy, sx, sy) => {
+        // image, posX in tile.png, posY in tile.png, tileWidth, tileHeight, posX in canvas, posY in canvas, tileSize in canvas = 25
+        return context.drawImage(img, tpx * 128, tpy * 128, 128, 128, sx, sy, grid, grid);
     }
 
     const canvasWidth = getClosestInteger(width, grid) - grid;
@@ -70,7 +48,7 @@ const startSnakeGame = (width, height, status) => {
         cells: [],
         // Стартовая длина змейки — 4 клеточки
         maxCells: 4,
-        direction: 'left',
+        direction: 'right',
         firstKeyEvent: 0
     };
 
@@ -90,8 +68,10 @@ const startSnakeGame = (width, height, status) => {
         // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. Было 60 кадров в секунду, станет 15.
         let requestAnimationFrameNum = requestAnimationFrame(loop);
 
+        let collision = false;
+
         // Игровой код выполнится только один раз из четырёх, в этом и суть замедления кадров, а пока переменная count меньше четырёх, код выполняться не будет.
-        if (++count < 6) {
+        if (++count < 7) {
             return;
         }
         // Обнуляем переменную скорости
@@ -103,16 +83,20 @@ const startSnakeGame = (width, height, status) => {
         snake.y += snake.dy;
         // Если змейка достигла края поля по горизонтали — продолжаем её движение с противоположной стороны
         if (snake.x < 0) {
+            collision = true;
             snake.x = canvas.width - grid;
         }
         else if (snake.x >= canvas.width) {
+            collision = true;
             snake.x = 0;
         }
         // Делаем то же самое для движения по вертикали
         if (snake.y < 0) {
+            collision = true;
             snake.y = canvas.height - grid;
         }
         else if (snake.y >= canvas.height) {
+            collision = true;
             snake.y = 0;
         }
         // Продолжаем двигаться в выбранном направлении. Голова всегда впереди, поэтому добавляем её координаты в начало массива, который отвечает за всю змейку.
@@ -123,7 +107,6 @@ const startSnakeGame = (width, height, status) => {
         }
         // Рисуем еду — красное яблоко
         context.fillStyle = 'white';
-        // context.roundRect(apple.x, apple.y, grid, grid, 0, 0, 0, borderRadius + 5, 'white'); 2,3,4,1 четверь
         context.beginPath();
         context.arc(apple.x + (grid / 2), apple.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
         context.fill();
@@ -132,49 +115,138 @@ const startSnakeGame = (width, height, status) => {
         
         // Обрабатываем каждый элемент змейки
         snake.cells.forEach((cell, index) => {
-        if (index == 0) {
-            if (snake.firstKeyEvent == 0) {
-                context.arc(cell.x, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
+        let segment = cell;
+        let segments = snake.cells
+            let sx = segment.x;
+            let sy = segment.y;
+
+            let tilePosX = 0;
+            let tilePosY = 0;
+
+            if (index === 0) {
+                // head
+                let nSeg = segments[index + 1];
+                if (nSeg.y > sy) {
+                    // up
+                    tilePosX = 3;
+                    tilePosY = 0;
+                    if (snake.direction === 'down') {
+                        // down
+                        tilePosX = 4;
+                        tilePosY = 1;
+                    }
+                } else if (nSeg.x < sx) {
+                    // right
+                    tilePosX = 4;
+                    tilePosY = 0;
+                    if (snake.direction === 'left') {
+                        // left
+                        tilePosX = 3;
+                        tilePosY = 1;
+                    }
+                } else if (nSeg.y < sy) {
+                    // down
+                    tilePosX = 4;
+                    tilePosY = 1;
+                    if (snake.direction === 'top') {
+                        // up
+                        tilePosX = 3;
+                        tilePosY = 0;
+                    }
+                } else if (nSeg.x > sx) {
+                    // left
+                    tilePosX = 3;
+                    tilePosY = 1;
+                    if (snake.direction === 'right') {
+                        // right
+                        tilePosX = 4;
+                        tilePosY = 0;
+                    }
+                }
+            } else if (segments.length - 1 === index) {
+                // tail
+                let pSeg = segments[index - 1];
+                if (pSeg.y < sy) {
+                    // up
+                    tilePosX = 3;
+                    tilePosY = 2;
+                    // if (snake.direction === 'down' && collision) {
+                    //     // down
+                    //     tilePosX = 4;
+                    //     tilePosY = 3;
+                    // }
+                } else if (pSeg.x > sx) {
+                    // right
+                    tilePosX = 4;
+                    tilePosY = 2;
+                    // if (snake.direction === 'left' && collision) {
+                    //     // left
+                    //     tilePosX = 3;
+                    //     tilePosY = 3;
+                    // }
+                } else if (pSeg.y > sy) {
+                    // down
+                    tilePosX = 4;
+                    tilePosY = 3;
+                    // if (snake.direction === 'top' && collision) {
+                    //     // up
+                    //     tilePosX = 3;
+                    //     tilePosY = 2;
+                    // }
+                } else if (pSeg.x < sx) {
+                    // left
+                    tilePosX = 3;
+                    tilePosY = 3;
+                    console.log(collision)
+                    // if (snake.direction === 'right' && collision) {
+                    //     // right
+                    //     tilePosX = 4;
+                    //     tilePosY = 2;
+                    // }
+                } 
             } else {
-                if (snake.direction == 'left') {
-                    context.arc(cell.x + grid, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
+                // body 
+                let pSeg = segments[index - 1];
+                let nSeg = segments[index + 1];
+                if (pSeg.x < sx && nSeg.x > sx || nSeg.x < sx && pSeg.x > sx) {
+                    // left right
+                    tilePosX = 1;
+                    tilePosY = 0;
+                } else if (pSeg.x < sx && nSeg.y > sy || nSeg.x < sx && pSeg.y > sy) {
+                    // left down
+                    tilePosX = 2;
+                    tilePosY = 0;
+                } else if (pSeg.y < sy && nSeg.y > sy || nSeg.y < sy && pSeg.y > sy) {
+                    // up down
+                    tilePosX = 2;
+                    tilePosY = 1;
+                } else if (pSeg.y < sy && nSeg.x < sx || nSeg.y < sy && pSeg.x < sx) {
+                    // top left
+                    tilePosX = 2;
+                    tilePosY = 2;
+                } else if (pSeg.x > sx && nSeg.y < sy || nSeg.x > sx && pSeg.y < sy) {
+                    //right up
+                    tilePosX = 0;
+                    tilePosY = 1;
+                } else if (pSeg.y > sy && nSeg.x > sx || nSeg.y > sy && pSeg.x > sx) {
+                    // down right
+                    tilePosX = 0;
+                    tilePosY = 0;
+                } else {
+                    if (snake.direction === 'left' || snake.direction === 'right') {
+                        // left right
+                        tilePosX = 1;
+                        tilePosY = 0;
+                    }
+                    if (snake.direction === 'top' || snake.direction === 'down') {
+                        // left right
+                        tilePosX = 2;
+                        tilePosY = 1;
+                    }
                 }
             }
-            if (snake.direction == 'right') {
-                context.arc(cell.x, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
-            }
-            if (snake.direction == 'top') {
-                context.arc(cell.x + (grid / 2), cell.y + grid, grid / 2, 0, 2 * Math.PI);
-            }
-            if (snake.direction == 'down') {
-                context.arc(cell.x + (grid / 2), cell.y, grid / 2, 0, 2 * Math.PI);
-            }
-        } 
-        else if (index == (snake.cells.length - 1)) {
-            const preCell = snake.cells[index - 1];
-            context.beginPath();
-            // right
-            if (preCell.x > cell.x && preCell.y === cell.y) {
-                context.arc(cell.x + grid, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
-            }
-            // left
-            if (preCell.x < cell.x && preCell.y === cell.y) {
-                context.arc(cell.x, cell.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
-            }
-            // down
-            if (preCell.x === cell.x && preCell.y > cell.y) {
-                context.arc(cell.x + (grid / 2), cell.y + grid, grid / 2, 0, 2 * Math.PI);
-            }
-            // top
-            if (preCell.x === cell.x && preCell.y < cell.y) {
-                context.arc(cell.x + (grid / 2), cell.y, grid / 2, 0, 2 * Math.PI);
-            }
-            context.closePath();;
-        }
-        else {
-            context.fillRect(cell.x, cell.y, grid, grid);
-        }
-        context.fill();
+
+            addTileToCanvas(tilePosX, tilePosY, sx, sy);
 
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
@@ -190,6 +262,7 @@ const startSnakeGame = (width, height, status) => {
         for (let i = index + 1; i < snake.cells.length; i++) {
             // Если такие клетки есть — начинаем игру заново
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+                console.log('stop')
                 // Задаём стартовые параметры основным переменным
                 snake.x = 160;
                 snake.y = 160;
