@@ -1,11 +1,15 @@
 import startSnakeGame from './snake';
 import { disablePageScroll } from 'scroll-lock';
+import smoothscroll from 'smoothscroll-polyfill';
+
+smoothscroll.polyfill();
 
 const appealButton = document.querySelector('.appeal__button');
 const appealMainVideo = document.querySelector('.main-video');
 const snakeStartButton = document.querySelector('.snake__button');
 const snakeParagraph = document.querySelector('.snake__paragraph');
 const formButton = document.querySelector('.form__button');
+const snakeGameBlock = document.querySelector('.snake');
 
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -25,9 +29,12 @@ appealButton.addEventListener('click', () => {
     }, 10000);
 });
 
-const snakeGameBlock = document.querySelector('.snake');
-
 snakeStartButton.addEventListener('click', () => {
+    console.dir(snakeGameBlock);//offsetTop
+    window.scrollTo({
+        top: snakeGameBlock.offsetTop,
+        behavior: "smooth"
+    });
     snakeStartButton.style.display = 'none';
     snakeParagraph.style.display = 'none';
 

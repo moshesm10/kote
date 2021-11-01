@@ -13,7 +13,9 @@ const startSnakeGame = (width, height, status, isMobile) => {
     let grid = 0;
     let borderRadius = 0;
 
-    if (width > 675) {
+    if (width > 1600) {
+        grid = 64;
+    } else if (width > 675) {
         grid = 48;
         borderRadius = 20;
     } else {
@@ -104,7 +106,7 @@ const startSnakeGame = (width, height, status, isMobile) => {
         // Рисуем еду — красное яблоко
         context.fillStyle = 'white';
         context.beginPath();
-        context.arc(apple.x + (grid / 2), apple.y + (grid / 2), grid / 2, 0, 2 * Math.PI);
+        context.arc(apple.x + (grid / 2), apple.y + (grid / 2), grid / 3, 0, 2 * Math.PI);
         context.fill();
         context.closePath();
         // Одно движение змейки — один новый нарисованный квадратик 

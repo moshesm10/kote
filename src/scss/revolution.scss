@@ -12,6 +12,7 @@
     &__content {
         position: absolute;
         top: 10em;
+        left: 7em;
         padding: 2em;
         z-index: 10;
 
@@ -35,7 +36,8 @@
             }
 
             &__content {
-                padding: 1em;
+                padding: 1em 0;
+                left: 1em;
 
                 .white {
                     // margin-top: -2em;
