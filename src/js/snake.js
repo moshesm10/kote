@@ -1,18 +1,15 @@
 import { enablePageScroll } from 'scroll-lock';
 
-const startSnakeGame = (width, height, status) => {
+const startSnakeGame = (width, height, status, isMobile) => {
 
     const canvas = document.getElementById('snake');
     const context = canvas.getContext('2d');
     const snakeStartButton = document.querySelector('.snake__button');
-    const img = new Image();   // Создаёт новый элемент изображения
-    img.src = '../img/test4.png'; // Устанавливает путь
-
-    // document.querySelector('body').style.overflow = 'hidden';
+    const img = new Image();
+    img.src = '../img/test4.png';
 
     let getClosestInteger = (a, b, x = Math.trunc(a / b)) => a > b ? !(a % b) ? a : (b * (x + 1) - a) < (a - b * x) ? b * (x + 1) : b * x : 'Некорректный ввод данных';
 
-    // Размер одной клеточки на поле — 16 пикселей
     let grid = 0;
     let borderRadius = 0;
 
@@ -20,12 +17,11 @@ const startSnakeGame = (width, height, status) => {
         grid = 48;
         borderRadius = 20;
     } else {
-        grid = 24;
+        grid = 36;
         borderRadius = 14;
     }
 
     const addTileToCanvas = (tpx, tpy, sx, sy) => {
-        // image, posX in tile.png, posY in tile.png, tileWidth, tileHeight, posX in canvas, posY in canvas, tileSize in canvas = 25
         return context.drawImage(img, tpx * 128, tpy * 128, 128, 128, sx, sy, grid, grid);
     }
 
@@ -170,40 +166,39 @@ const startSnakeGame = (width, height, status) => {
                     // up
                     tilePosX = 3;
                     tilePosY = 2;
-                    // if (snake.direction === 'down' && collision) {
-                    //     // down
-                    //     tilePosX = 4;
-                    //     tilePosY = 3;
-                    // }
+                    if (pSeg.y === 0 && sy > grid) {
+                        // down
+                        tilePosX = 4;
+                        tilePosY = 3;
+                    }
                 } else if (pSeg.x > sx) {
                     // right
                     tilePosX = 4;
                     tilePosY = 2;
-                    // if (snake.direction === 'left' && collision) {
-                    //     // left
-                    //     tilePosX = 3;
-                    //     tilePosY = 3;
-                    // }
+                    if (sx === 0 && pSeg.x > grid) {
+                        // left
+                        tilePosX = 3;
+                        tilePosY = 3;
+                    }
                 } else if (pSeg.y > sy) {
                     // down
                     tilePosX = 4;
                     tilePosY = 3;
-                    // if (snake.direction === 'top' && collision) {
-                    //     // up
-                    //     tilePosX = 3;
-                    //     tilePosY = 2;
-                    // }
+                    if (sy === 0 && pSeg.y > grid) {
+                        // up
+                        tilePosX = 3;
+                        tilePosY = 2;
+                    }
                 } else if (pSeg.x < sx) {
                     // left
                     tilePosX = 3;
                     tilePosY = 3;
-                    console.log(collision)
-                    // if (snake.direction === 'right' && collision) {
-                    //     // right
-                    //     tilePosX = 4;
-                    //     tilePosY = 2;
-                    // }
-                } 
+                    if (pSeg.x === 0 && sx > grid) {
+                        // right
+                        tilePosX = 4;
+                        tilePosY = 2;
+                    }
+                }
             } else {
                 // body 
                 let pSeg = segments[index - 1];
@@ -212,6 +207,7 @@ const startSnakeGame = (width, height, status) => {
                     // left right
                     tilePosX = 1;
                     tilePosY = 0;
+                    
                 } else if (pSeg.x < sx && nSeg.y > sy || nSeg.x < sx && pSeg.y > sy) {
                     // left down
                     tilePosX = 2;
@@ -233,13 +229,13 @@ const startSnakeGame = (width, height, status) => {
                     tilePosX = 0;
                     tilePosY = 0;
                 } else {
-                    if (snake.direction === 'left' || snake.direction === 'right') {
-                        // left right
+                    // left right
+                    if (pSeg.x < sx || pSeg.x > sx) {
                         tilePosX = 1;
                         tilePosY = 0;
                     }
-                    if (snake.direction === 'top' || snake.direction === 'down') {
-                        // left right
+                    // up down
+                    if (pSeg.y < sy || pSeg.y > sy) {
                         tilePosX = 2;
                         tilePosY = 1;
                     }
@@ -262,7 +258,143 @@ const startSnakeGame = (width, height, status) => {
         for (let i = index + 1; i < snake.cells.length; i++) {
             // Если такие клетки есть — начинаем игру заново
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-                console.log('stop')
+
+                 // Обрабатываем каждый элемент змейки
+            snake.cells.forEach((cell, index) => {
+                let segment = cell;
+                let segments = snake.cells
+                let sx = segment.x;
+                let sy = segment.y;
+
+                let tilePosX = 0;
+                let tilePosY = 0;
+
+                if (index === 0) {
+                    // head
+                    let nSeg = segments[index + 1];
+                    if (nSeg.y > sy) {
+                        // up
+                        tilePosX = 3;
+                        tilePosY = 0;
+                        if (snake.direction === 'down') {
+                            // down
+                            tilePosX = 4;
+                            tilePosY = 1;
+                        }
+                    } else if (nSeg.x < sx) {
+                        // right
+                        tilePosX = 4;
+                        tilePosY = 0;
+                        if (snake.direction === 'left') {
+                            // left
+                            tilePosX = 3;
+                            tilePosY = 1;
+                        }
+                    } else if (nSeg.y < sy) {
+                        // down
+                        tilePosX = 4;
+                        tilePosY = 1;
+                        if (snake.direction === 'top') {
+                            // up
+                            tilePosX = 3;
+                            tilePosY = 0;
+                        }
+                    } else if (nSeg.x > sx) {
+                        // left
+                        tilePosX = 3;
+                        tilePosY = 1;
+                        if (snake.direction === 'right') {
+                            // right
+                            tilePosX = 4;
+                            tilePosY = 0;
+                        }
+                    }
+                } else if (segments.length - 1 === index) {
+                    // tail
+                    let pSeg = segments[index - 1];
+                    if (pSeg.y < sy) {
+                        // up
+                        tilePosX = 3;
+                        tilePosY = 2;
+                        if (pSeg.y === 0 && sy > grid) {
+                            // down
+                            tilePosX = 4;
+                            tilePosY = 3;
+                        }
+                    } else if (pSeg.x > sx) {
+                        // right
+                        tilePosX = 4;
+                        tilePosY = 2;
+                        if (sx === 0 && pSeg.x > grid) {
+                            // left
+                            tilePosX = 3;
+                            tilePosY = 3;
+                        }
+                    } else if (pSeg.y > sy) {
+                        // down
+                        tilePosX = 4;
+                        tilePosY = 3;
+                        if (sy === 0 && pSeg.y > grid) {
+                            // up
+                            tilePosX = 3;
+                            tilePosY = 2;
+                        }
+                    } else if (pSeg.x < sx) {
+                        // left
+                        tilePosX = 3;
+                        tilePosY = 3;
+                        if (pSeg.x === 0 && sx > grid) {
+                            // right
+                            tilePosX = 4;
+                            tilePosY = 2;
+                        }
+                    }
+                } else {
+                    // body 
+                    let pSeg = segments[index - 1];
+                    let nSeg = segments[index + 1];
+                    if (pSeg.x < sx && nSeg.x > sx || nSeg.x < sx && pSeg.x > sx) {
+                        // left right
+                        tilePosX = 1;
+                        tilePosY = 0;
+                        
+                    } else if (pSeg.x < sx && nSeg.y > sy || nSeg.x < sx && pSeg.y > sy) {
+                        // left down
+                        tilePosX = 2;
+                        tilePosY = 0;
+                    } else if (pSeg.y < sy && nSeg.y > sy || nSeg.y < sy && pSeg.y > sy) {
+                        // up down
+                        tilePosX = 2;
+                        tilePosY = 1;
+                    } else if (pSeg.y < sy && nSeg.x < sx || nSeg.y < sy && pSeg.x < sx) {
+                        // top left
+                        tilePosX = 2;
+                        tilePosY = 2;
+                    } else if (pSeg.x > sx && nSeg.y < sy || nSeg.x > sx && pSeg.y < sy) {
+                        //right up
+                        tilePosX = 0;
+                        tilePosY = 1;
+                    } else if (pSeg.y > sy && nSeg.x > sx || nSeg.y > sy && pSeg.x > sx) {
+                        // down right
+                        tilePosX = 0;
+                        tilePosY = 0;
+                    } else {
+                        // left right
+                        if (pSeg.x < sx || pSeg.x > sx) {
+                            tilePosX = 1;
+                            tilePosY = 0;
+                        }
+                        // up down
+                        if (pSeg.y < sy || pSeg.y > sy) {
+                            tilePosX = 2;
+                            tilePosY = 1;
+                        }
+                    }
+                }
+
+                addTileToCanvas(tilePosX, tilePosY, sx, sy);
+            });
+
                 // Задаём стартовые параметры основным переменным
                 snake.x = 160;
                 snake.y = 160;
@@ -276,7 +408,9 @@ const startSnakeGame = (width, height, status) => {
                 apple.y = getRandomInt(0, canvasHeight/ grid) * grid;
 
                 cancelAnimationFrame(requestAnimationFrameNum);
-                enablePageScroll();
+                if (isMobile) {
+                    enablePageScroll();
+                }
                 snakeStartButton.innerText = 'ещё раз'
                 snakeStartButton.style.display = '';
             }
