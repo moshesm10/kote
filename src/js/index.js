@@ -30,7 +30,7 @@ const snakeGameBlock = document.querySelector('.snake');
 snakeStartButton.addEventListener('click', () => {
     snakeStartButton.style.display = 'none';
     snakeParagraph.style.display = 'none';
-    
+
     if (isMobile()) {
         disablePageScroll();
     }
@@ -40,9 +40,24 @@ snakeStartButton.addEventListener('click', () => {
 
 formButton.addEventListener('click', (e) => {
     e.preventDefault();
-    const formData = new FormData(document.forms[0]);
-    console.log(formData.get('email'));
 
+    const formData = new FormData(document.forms[0]);
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('POST', '/ajax/add_email.php');
+    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            if (xmlhttp.status == 200) {
+                alert('Мы вас добавили');
+            } else if (xmlhttp.status == 400) {
+                alert('Произошла ошибка');
+            }
+        }
+    };
+
+    xmlhttp.send('email=' + formData.get('email'));
 });
 
 window.onload = () => {
