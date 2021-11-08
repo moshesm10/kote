@@ -12,7 +12,7 @@
     &__content {
         h2 {
             margin-top: 0;
-            margin-right: 1em;
+            margin-right: 0.5em;
             font-size: 8em;
         }
     }
@@ -24,11 +24,11 @@
             position: absolute;
             top: 4.5em;
             left: 7em;
-            width: 17em;
+            width: 13.5em;
         }
 
         svg {
-            width: 30em;
+            width: 26.5em;
             animation: rotation 10s linear infinite;
         }
     }
