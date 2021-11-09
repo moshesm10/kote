@@ -6,7 +6,10 @@ const startSnakeGame = (width, height, status, isMobile) => {
     const context = canvas.getContext('2d');
     const snakeStartButton = document.querySelector('.snake__button');
     const img = new Image();
-    img.src = '../img/test4.png';
+    img.src = '../img/test5.png';
+
+    const img2 = new Image();
+    img2.src = '../img/test5_1.png';
 
     let getClosestInteger = (a, b, x = Math.trunc(a / b)) => a > b ? !(a % b) ? a : (b * (x + 1) - a) < (a - b * x) ? b * (x + 1) : b * x : 'Некорректный ввод данных';
 
@@ -27,6 +30,10 @@ const startSnakeGame = (width, height, status, isMobile) => {
         return context.drawImage(img, tpx * 128, tpy * 128, 128, 128, sx, sy, grid, grid);
     }
 
+    const addTileToCanvas147 = (tpx, tpy, sx, sy) => {
+        return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx, sy, grid, grid);
+    }
+
     const canvasWidth = getClosestInteger(width, grid) - grid;
     const canvasHeight = getClosestInteger(height, grid) - grid;
     canvas.width = canvasWidth;
@@ -34,6 +41,12 @@ const startSnakeGame = (width, height, status, isMobile) => {
     
     // Служебная переменная, которая отвечает за скорость змейки
     let count = 0;
+
+    // Очки
+    let result = 1;
+    let isApple = 0;
+
+    let speed = 8;
 
     let snake = {
         // Начальные координаты
@@ -45,7 +58,7 @@ const startSnakeGame = (width, height, status, isMobile) => {
         // Тащим за собой хвост, который пока пустой
         cells: [],
         // Стартовая длина змейки — 4 клеточки
-        maxCells: 4,
+        maxCells: 3,
         direction: 'right',
         firstKeyEvent: 0
     };
@@ -66,12 +79,17 @@ const startSnakeGame = (width, height, status, isMobile) => {
         // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. Было 60 кадров в секунду, станет 15.
         let requestAnimationFrameNum = requestAnimationFrame(loop);
 
-        let collision = false;
-
+        if (result % 5 == 0 && speed > 1 && isApple) {
+            console.log(result % 5 == 0)
+            speed -= 0.1;
+        }
         // Игровой код выполнится только один раз из четырёх, в этом и суть замедления кадров, а пока переменная count меньше четырёх, код выполняться не будет.
-        if (++count < 7) {
+        if (++count < speed) {
             return;
         }
+
+        isApple = 0;
+
         // Обнуляем переменную скорости
         count = 0;
         // Очищаем игровое поле
@@ -81,20 +99,16 @@ const startSnakeGame = (width, height, status, isMobile) => {
         snake.y += snake.dy;
         // Если змейка достигла края поля по горизонтали — продолжаем её движение с противоположной стороны
         if (snake.x < 0) {
-            collision = true;
             snake.x = canvas.width - grid;
         }
         else if (snake.x >= canvas.width) {
-            collision = true;
             snake.x = 0;
         }
         // Делаем то же самое для движения по вертикали
         if (snake.y < 0) {
-            collision = true;
             snake.y = canvas.height - grid;
         }
         else if (snake.y >= canvas.height) {
-            collision = true;
             snake.y = 0;
         }
         // Продолжаем двигаться в выбранном направлении. Голова всегда впереди, поэтому добавляем её координаты в начало массива, который отвечает за всю змейку.
@@ -244,10 +258,33 @@ const startSnakeGame = (width, height, status, isMobile) => {
                 }
             }
 
-            addTileToCanvas(tilePosX, tilePosY, sx, sy);
+            if (cell.x === apple.x && cell.y === apple.y) {
+                if (index === 0) {
+                    if (tilePosX == 3 || tilePosX == 5) {
+                        tilePosX = 0;
+                    } else if (tilePosX == 4 || tilePosX == 6) {
+                        tilePosX = 1;
+                    }
+
+                    addTileToCanvas147(tilePosX, tilePosY, sx, sy)
+                } 
+                else {
+                    addTileToCanvas(tilePosX, tilePosY, sx, sy);
+                }
+            } else {
+                if (index === 0) {
+                    if (cell.x - grid === apple.x && cell.y - grid === apple.y || cell.x - grid === apple.x && cell.y + grid === apple.y || cell.x + grid === apple.x && cell.y - grid === apple.y || cell.x + grid === apple.x && cell.y + grid === apple.y || cell.x === apple.x && cell.y + grid === apple.y || cell.x + grid === apple.x && cell.y === apple.y || cell.x === apple.x && cell.y - grid === apple.y || cell.x - grid === apple.x && cell.y === apple.y) {
+                        tilePosX += 2;
+                    }
+                }
+                addTileToCanvas(tilePosX, tilePosY, sx, sy);
+            }
+            
 
         // Если змейка добралась до яблока...
         if (cell.x === apple.x && cell.y === apple.y) {
+            isApple = 1;
+            result++;
             // увеличиваем длину змейки
             snake.maxCells++;
             // Рисуем новое яблочко
