@@ -1,12 +1,20 @@
-import { enablePageScroll } from 'scroll-lock';
+import { enablePageScroll, disablePageScroll } from 'scroll-lock';
 
-const startSnakeGame = (width, height, status, isMobile) => {
+
+const startSnakeGame = (width, height) => {
+
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    const isMobileBool = isMobile();
+    let isGameStart = false;
 
     const canvas = document.getElementById('snake');
     const context = canvas.getContext('2d');
     const snakeStartButton = document.querySelector('.snake__button');
     const img = new Image();
-    img.src = '../img/test5.png';
+    img.src = '../img/test6.png';
 
     const img2 = new Image();
     img2.src = '../img/test5_1.png';
@@ -17,13 +25,17 @@ const startSnakeGame = (width, height, status, isMobile) => {
     let borderRadius = 0;
 
     if (width > 1600) {
-        grid = 64;
+        grid = 70;
     } else if (width > 675) {
-        grid = 48;
+        grid = 52;
         borderRadius = 20;
     } else {
         grid = 36;
         borderRadius = 14;
+    }
+
+    while (width % grid >= 10) {
+        grid--;
     }
 
     const addTileToCanvas = (tpx, tpy, sx, sy) => {
@@ -34,10 +46,12 @@ const startSnakeGame = (width, height, status, isMobile) => {
         return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx, sy, grid, grid);
     }
 
-    const canvasWidth = getClosestInteger(width, grid) - grid;
-    const canvasHeight = getClosestInteger(height, grid) - grid;
+    const canvasWidth = getClosestInteger(width, grid);
+    const canvasHeight = getClosestInteger(height, grid);
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
     
     // Служебная переменная, которая отвечает за скорость змейки
     let count = 0;
@@ -50,8 +64,8 @@ const startSnakeGame = (width, height, status, isMobile) => {
 
     let snake = {
         // Начальные координаты
-        x: grid,
-        y: grid,
+        x: grid * 2,
+        y: grid * 4,
         // Скорость змейки — в каждом новом кадре змейка смещается по оси Х или У. На старте будет двигаться горизонтально, поэтому скорость по игреку равна нулю.
         dx: grid,
         dy: 0,
@@ -62,6 +76,10 @@ const startSnakeGame = (width, height, status, isMobile) => {
         direction: 'right',
         firstKeyEvent: 0
     };
+
+    let requestAnimationFrameNum;
+
+    let appleAnimCount = 0;
 
     const getRandomInt = (min, max) => {
         return Math.floor(Math.random() * (max - min)) + min;
@@ -74,13 +92,16 @@ const startSnakeGame = (width, height, status, isMobile) => {
         y: getRandomInt(0, canvasHeight / grid) * grid
     };
 
+    const snakeGameBlock = document.querySelector('.snake');
+    const snakeParagraph = document.querySelector('.snake__paragraph');
+
     // Игровой цикл — основной процесс, внутри которого будет всё происходить
     const loop = () => {
         // Дальше будет хитрая функция, которая замедляет скорость игры с 60 кадров в секунду до 15. Для этого она пропускает три кадра из четырёх, то есть срабатывает каждый четвёртый кадр игры. Было 60 кадров в секунду, станет 15.
-        let requestAnimationFrameNum = requestAnimationFrame(loop);
+
+        requestAnimationFrameNum = requestAnimationFrame(loop);
 
         if (result % 5 == 0 && speed > 1 && isApple) {
-            console.log(result % 5 == 0)
             speed -= 0.1;
         }
         // Игровой код выполнится только один раз из четырёх, в этом и суть замедления кадров, а пока переменная count меньше четырёх, код выполняться не будет.
@@ -89,7 +110,6 @@ const startSnakeGame = (width, height, status, isMobile) => {
         }
 
         isApple = 0;
-
         // Обнуляем переменную скорости
         count = 0;
         // Очищаем игровое поле
@@ -118,11 +138,13 @@ const startSnakeGame = (width, height, status, isMobile) => {
             snake.cells.pop();
         }
         // Рисуем еду — красное яблоко
-        context.fillStyle = 'white';
-        context.beginPath();
-        context.arc(apple.x + (grid / 2), apple.y + (grid / 2), grid / 3, 0, 2 * Math.PI);
-        context.fill();
-        context.closePath();
+        if (appleAnimCount < 3) {
+            addTileToCanvas(5 + appleAnimCount, 3, apple.x, apple.y);
+            appleAnimCount++;
+        } else {
+            addTileToCanvas(5 + appleAnimCount, 3, apple.x, apple.y);
+            appleAnimCount = 0;
+        }
         // Одно движение змейки — один новый нарисованный квадратик 
         
         // Обрабатываем каждый элемент змейки
@@ -435,19 +457,22 @@ const startSnakeGame = (width, height, status, isMobile) => {
             });
 
                 // Задаём стартовые параметры основным переменным
-                snake.x = 160;
-                snake.y = 160;
+                snake.x = grid * 2;
+                snake.y = grid * 2;
                 snake.cells = [];
-                snake.maxCells = 4;
+                snake.maxCells = 3;
                 snake.dx = grid;
                 snake.dy = 0;
                 snake.firstKeyEvent = 0;
+                result = 1;
+                speed = 8;
+                snake.direction = 'right';
                 // Ставим яблочко в случайное место
                 apple.x = getRandomInt(0, canvasWidth / grid) * grid;
-                apple.y = getRandomInt(0, canvasHeight/ grid) * grid;
+                apple.y = getRandomInt(0, canvasHeight / grid) * grid;
 
                 cancelAnimationFrame(requestAnimationFrameNum);
-                if (isMobile) {
+                if (isMobileBool) {
                     enablePageScroll();
                 }
                 snakeStartButton.innerText = 'ещё раз'
@@ -455,6 +480,10 @@ const startSnakeGame = (width, height, status, isMobile) => {
             }
         }
         });
+
+        if (!isGameStart) {
+            cancelAnimationFrame(requestAnimationFrameNum);
+        }
     }
     let lastKey = 'right';
     // Смотрим, какие нажимаются клавиши, и реагируем на них нужным образом
@@ -554,8 +583,49 @@ const startSnakeGame = (width, height, status, isMobile) => {
         }
     }, false);
 
-    if (status) {
-        requestAnimationFrame(loop);
+    for (let i = 0; i < 4; i++) {
+        loop();
+    }
+
+    snakeStartButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: snakeGameBlock.offsetTop,
+            behavior: "smooth"
+        });
+        snakeStartButton.style.display = 'none';
+        snakeParagraph.style.display = 'none';
+    
+        if (isMobile()) {
+            disablePageScroll();
+        }
+
+        isGameStart = true;
+    
+        loop();
+    });
+
+    window.onresize= () => {
+        cancelAnimationFrame(requestAnimationFrameNum);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        isGameStart = false;
+
+        // Задаём стартовые параметры основным переменным
+        snake.x = grid * 2;
+        snake.y = grid * 2;
+        snake.cells = [];
+        snake.maxCells = 3;
+        snake.dx = grid;
+        snake.dy = 0;
+        snake.firstKeyEvent = 0;
+        result = 1;
+        speed = 8;
+        snake.direction = 'right';
+        // Ставим яблочко в случайное место
+        apple.x = getRandomInt(0, canvasWidth / grid) * grid;
+        apple.y = getRandomInt(0, canvasHeight / grid) * grid;
+
+        snakeStartButton.style.display = '';
+        snakeParagraph.style.display = '';
     }
 }
 

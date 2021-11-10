@@ -1,48 +1,35 @@
 import startSnakeGame from './snake';
-import { disablePageScroll } from 'scroll-lock';
 import smoothscroll from 'smoothscroll-polyfill';
 
 smoothscroll.polyfill();
 
-const appealButton = document.querySelector('.appeal__button');
 const appealMainVideo = document.querySelector('.main-video');
 const snakeStartButton = document.querySelector('.snake__button');
 const snakeParagraph = document.querySelector('.snake__paragraph');
 const formButton = document.querySelector('.form__button');
-const snakeGameBlock = document.querySelector('.snake');
+let snakeGameBlock = document.querySelector('.snake');
 
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-appealButton.addEventListener('click', () => {
-    appealButton.style.display = 'none';
+const canvasSnake = document.querySelector('#snake');
+startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
+let timerId = 0;
 
-    appealMainVideo.classList.remove('hidden');
-    appealMainVideo.classList.add('active-video');
-
-    setTimeout(() => {
-        appealButton.style.display = '';
-
-        appealMainVideo.classList.add('hidden');
-        appealMainVideo.classList.remove('active-video');
-    }, 10000);
-});
-
-snakeStartButton.addEventListener('click', () => {
-    console.dir(snakeGameBlock);//offsetTop
-    window.scrollTo({
-        top: snakeGameBlock.offsetTop,
-        behavior: "smooth"
-    });
-    snakeStartButton.style.display = 'none';
-    snakeParagraph.style.display = 'none';
-
-    if (isMobile()) {
-        disablePageScroll();
+window.addEventListener('resize', () => {
+    if (timerId) {
+        clearTimeout(timerId);
     }
-
-    startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, true, isMobile());
+    
+    snakeGameBlock = document.querySelector('.snake');
+    canvasSnake.style.opacity = '0';
+    startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
+    
+    timerId = setTimeout(() => {
+        canvasSnake.style.opacity = '1';
+    }, 400);
+    
 });
 
 formButton.addEventListener('click', (e) => {
@@ -89,4 +76,24 @@ window.onload = () => {
     arr.forEach(i => {
         observer.observe(i);
     });
+
+    const optionsBlock = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.7
+    };
+
+    const observerBlock = new IntersectionObserver((block, observer) => {
+            if (block[0].isIntersecting) {
+                const element = block[0].target;
+                appealMainVideo.classList.remove('hidden');
+                appealMainVideo.classList.add('active-video');
+            } else {
+                appealMainVideo.classList.add('hidden');
+                appealMainVideo.classList.remove('active-video');
+            }
+    }, optionsBlock);
+
+    const batmanBlock = document.querySelector('.appeal__video-wrapper');
+    observerBlock.observe(batmanBlock);
 };
