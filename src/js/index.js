@@ -85,7 +85,6 @@ window.onload = () => {
 
     const observerBlock = new IntersectionObserver((block, observer) => {
             if (block[0].isIntersecting) {
-                const element = block[0].target;
                 appealMainVideo.classList.remove('hidden');
                 appealMainVideo.classList.add('active-video');
             } else {
