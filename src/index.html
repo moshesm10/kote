@@ -1,17 +1,19 @@
 <!DOCTYPE html>
+<!-- (c) Art. Lebedev Studio | https://www.artlebedev.ru/ -->
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="msapplication-TileColor" content="#ffc40d">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="./css/main.css">
-    <title>Kote</title>
+    <title>Koté</title>
 </head>
 <body>
     <!-- Header -->
@@ -36,7 +38,7 @@
             <div class="content__wrapper">
                 <div class="content__text">
                     <h2 class="border white">Как<br>работает<br>котé?</h2>
-                    <p>Пока не ясно. Но, может быть, из за него подорожают видяхи.</p>
+                    <p>Пока не ясно. Но, может быть, из-за него подорожают видяхи.</p>
                 </div>
                 <div class="how-to-work__img">
                     <div class="text-description">
@@ -111,7 +113,7 @@
     <!-- /Wait -->
     <!-- Snake game -->
     <div class="container-wide snake">
-        <p class="snake__paragraph">Можно потупить в змейку, чтобы скрасить ожидание</p>
+        <p class="container snake__paragraph">Можно потупить в змейку, чтобы скрасить ожидание</p>
         <canvas id="snake" width="1" height="1"></canvas>
         <button class="button snake__button button-gray">потупить</button>
     </div>
@@ -121,16 +123,17 @@
         <div class="form__wrapper">
             <p>А можно отправить куда-то свою электропочту, и когда котé появится, кто-нибудь пришлет на нее уведомление.</p>
             <form action="">
-                <input class="email" type="email" name="email" id="email" placeholder="электропочта">
+                <input class="email" type="email" name="email" id="email" placeholder="электропочта" autocomplete="email">
                 <button class="button button-black form__button">отправить</button>
             </form>
+            <span class="status-message"></span>
         </div>
     </div>
     <!-- /Form -->
     <!-- Copyright -->
     <div class="container copyright">
         <div class="copyright__wrapper">
-            <img src="./img/ALS_logo.svg" alt="Логотип Cтудии Артемия Лебедева" srcset="">
+            <a href="https://www.artlebedev.ru/"><img src="./img/ALS_logo.svg" alt="Логотип Cтудии Артемия Лебедева" srcset=""></a>
             <div class="copyright__text">
                 <span>Задизайнено в&nbsp;<a href="https://www.artlebedev.ru/">Студии Артемия Лебедева</a></span>
                 <span><a href="https://www.artlebedev.ru/">Информация о сайте</a></span>

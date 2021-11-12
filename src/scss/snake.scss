@@ -20,7 +20,7 @@
 
     p {
         position: absolute;
-        top: 1em;
+        top: 0;
         left: 7em;
         width: 40%;
         color: #fff;
@@ -29,6 +29,7 @@
 
     @media (max-width: $screen-640) {
         p {
+            left: 0;
             width: auto;
         }
     }

@@ -86,6 +86,7 @@ h2 {
 
     &-gray {
         background: $gray-text;
+        color: #000;
 
         &:hover {
             transition: .5s;
@@ -111,10 +112,11 @@ h2 {
     font-weight: 800;
     font-size: 3em;
     outline: none;
-    color: #c9c9c9;
+    color: #000000;
     border: 0.02em solid #8C8C8C;
     border-radius: 1em;
     box-sizing: border-box;
+    line-height: 1.1;
 
     &::placeholder {
         color: #c9c9c9;

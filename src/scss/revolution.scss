@@ -30,9 +30,11 @@
 
     @media (max-width: $screen-640) {
         & {
+            height: 47em;
 
             video {
-                transform: translateX(-10%);
+                position: absolute;
+                right: -11em;
             }
 
             &__content {

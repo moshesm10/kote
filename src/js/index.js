@@ -4,8 +4,6 @@ import smoothscroll from 'smoothscroll-polyfill';
 smoothscroll.polyfill();
 
 const appealMainVideo = document.querySelector('.main-video');
-const snakeStartButton = document.querySelector('.snake__button');
-const snakeParagraph = document.querySelector('.snake__paragraph');
 const formButton = document.querySelector('.form__button');
 let snakeGameBlock = document.querySelector('.snake');
 
@@ -13,47 +11,56 @@ function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+// Игра в змейку-котé
 const canvasSnake = document.querySelector('#snake');
-startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
-let timerId = 0;
+const img = new Image();
+    img.src = '../img/test6.png';
 
-window.addEventListener('resize', () => {
-    if (timerId) {
-        clearTimeout(timerId);
-    }
-    
-    snakeGameBlock = document.querySelector('.snake');
-    canvasSnake.style.opacity = '0';
-    startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
-    
-    timerId = setTimeout(() => {
-        canvasSnake.style.opacity = '1';
-    }, 400);
-    
-});
+const img2 = new Image();
+img2.src = '../img/test5_1.png';
 
+startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, img, img2, false);
+
+
+// Обработка и отправка формы
 formButton.addEventListener('click', (e) => {
     e.preventDefault();
+    const emailInputValue = document.querySelector('.email').value;
+    const statusMessageBlock = document.querySelector('.status-message');
 
-    const formData = new FormData(document.forms[0]);
+    let statusMessage = '';
 
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('POST', '/ajax/add_email.php');
-    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    function validateEmail(email) {
+        var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+        return re.test(String(email).toLowerCase());
+    }
 
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlhttp.status == 200) {
-                alert('Мы вас добавили');
-            } else if (xmlhttp.status == 400) {
-                alert('Произошла ошибка');
+    if (validateEmail(emailInputValue)) {
+        const formData = new FormData(document.forms[0]);
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('POST', '/ajax/add_email.php');
+        xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+                if (xmlhttp.status == 200) {
+                    statusMessage = 'Мы добавили твой email';
+                } else if (xmlhttp.status == 400) {
+                    statusMessage = 'Произошла ошибка, попробуй ещё раз';
+                }
             }
-        }
-    };
+        };
 
-    xmlhttp.send('email=' + formData.get('email'));
+        xmlhttp.send('email=' + formData.get('email'));
+    } else {
+        statusMessage = 'Неправильно введен email, попробуй ещё раз';
+    }
+    statusMessageBlock.textContent = statusMessage;
+    
 });
 
+// Автоматический запуск видео
 window.onload = () => {
     const options = {
         root: null,
