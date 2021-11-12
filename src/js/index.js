@@ -28,7 +28,7 @@ formButton.addEventListener('click', (e) => {
     const emailInputValue = document.querySelector('.email').value;
     const statusMessageBlock = document.querySelector('.status-message');
 
-    let statusMessage = '';
+    statusMessageBlock.textContent = '';
 
     function validateEmail(email) {
         var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
@@ -45,18 +45,17 @@ formButton.addEventListener('click', (e) => {
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == XMLHttpRequest.DONE) {
                 if (xmlhttp.status == 200) {
-                    statusMessage = 'Мы добавили твой email';
+                    statusMessageBlock.textContent = 'Мы добавили твой email';
                 } else if (xmlhttp.status == 400) {
-                    statusMessage = 'Произошла ошибка, попробуй ещё раз';
+                    statusMessageBlock.textContent = 'Произошла ошибка, попробуй ещё раз';
                 }
             }
         };
 
         xmlhttp.send('email=' + formData.get('email'));
     } else {
-        statusMessage = 'Неправильно введен email, попробуй ещё раз';
+        statusMessageBlock.textContent = 'Неправильно введен email, попробуй ещё раз';
     }
-    statusMessageBlock.textContent = statusMessage;
     
 });
 
