@@ -94,7 +94,6 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         while (width % grid >= 10) {
             grid--;
         }
-
         canvasWidth = getClosestInteger(width, grid);
         canvasHeight = getClosestInteger(height, grid);
 
@@ -103,7 +102,7 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
 
         // Задаём стартовые параметры основным переменным
         snake.x = grid * 2;
-        snake.y = grid * 2;
+        snake.y = grid * 4;
         snake.cells = [];
         snake.maxCells = 3;
         snake.dx = grid;
@@ -123,18 +122,8 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         }
     }
 
-    let timerId = 0;
     window.addEventListener('resize', () => {
-        if (timerId) {
-            clearTimeout(timerId);
-        }
-        
-        canvas.style.opacity = '0';
         initGameSettings(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
-
-        timerId = setTimeout(() => {
-            canvas.style.opacity = '1';
-        }, 400);
     });
 
     // Игровой цикл
@@ -200,41 +189,43 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         if (index === 0) {
             // head
             let nSeg = segments[index + 1];
-            if (nSeg.y > sy) {
-                // up
-                tilePosX = 3;
-                tilePosY = 0;
-                if (snake.direction === 'down') {
-                    // down
-                    tilePosX = 4;
-                    tilePosY = 1;
-                }
-            } else if (nSeg.x < sx) {
-                // right
-                tilePosX = 4;
-                tilePosY = 0;
-                if (snake.direction === 'left') {
-                    // left
-                    tilePosX = 3;
-                    tilePosY = 1;
-                }
-            } else if (nSeg.y < sy) {
-                // down
-                tilePosX = 4;
-                tilePosY = 1;
-                if (snake.direction === 'top') {
+            if (nSeg) {
+                if (nSeg.y > sy) {
                     // up
                     tilePosX = 3;
                     tilePosY = 0;
-                }
-            } else if (nSeg.x > sx) {
-                // left
-                tilePosX = 3;
-                tilePosY = 1;
-                if (snake.direction === 'right') {
+                    if (snake.direction === 'down') {
+                        // down
+                        tilePosX = 4;
+                        tilePosY = 1;
+                    }
+                } else if (nSeg.x < sx) {
                     // right
                     tilePosX = 4;
                     tilePosY = 0;
+                    if (snake.direction === 'left') {
+                        // left
+                        tilePosX = 3;
+                        tilePosY = 1;
+                    }
+                } else if (nSeg.y < sy) {
+                    // down
+                    tilePosX = 4;
+                    tilePosY = 1;
+                    if (snake.direction === 'top') {
+                        // up
+                        tilePosX = 3;
+                        tilePosY = 0;
+                    }
+                } else if (nSeg.x > sx) {
+                    // left
+                    tilePosX = 3;
+                    tilePosY = 1;
+                    if (snake.direction === 'right') {
+                        // right
+                        tilePosX = 4;
+                        tilePosY = 0;
+                    }
                 }
             }
         } else if (segments.length - 1 === index) {
