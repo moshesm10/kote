@@ -1,4 +1,4 @@
-import { enablePageScroll, disablePageScroll } from 'scroll-lock';
+// import { enablePageScroll, disablePageScroll, addScrollableTarget } from 'scroll-lock';
 
 
 const startSnakeGame = (width, height, img, img2, isGameStart) => {
@@ -62,7 +62,7 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         dx: grid,
         dy: 0,
         cells: [],
-        maxCells: 3,
+        maxCells: 10,
         direction: 'right',
         firstKeyEvent: 0
     };
@@ -276,27 +276,47 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
                 // left right
                 tilePosX = 1;
                 tilePosY = 0;
-                
+                // console.log('left right')
             } else if (pSeg.x < sx && nSeg.y > sy || nSeg.x < sx && pSeg.y > sy) {
                 // left down
                 tilePosX = 2;
                 tilePosY = 0;
+
+                // console.log('left down')
             } else if (pSeg.y < sy && nSeg.y > sy || nSeg.y < sy && pSeg.y > sy) {
                 // up down
                 tilePosX = 2;
                 tilePosY = 1;
+                
+                // console.log('up down', pSeg.y, sy)
             } else if (pSeg.y < sy && nSeg.x < sx || nSeg.y < sy && pSeg.x < sx) {
                 // top left
                 tilePosX = 2;
                 tilePosY = 2;
+                // console.log('top left')
             } else if (pSeg.x > sx && nSeg.y < sy || nSeg.x > sx && pSeg.y < sy) {
                 //right up
                 tilePosX = 0;
                 tilePosY = 1;
+
+                if (sx === 0 && pSeg.y !== sy) {
+                    tilePosX = 2;
+                    tilePosY = 2;
+                }
             } else if (pSeg.y > sy && nSeg.x > sx || nSeg.y > sy && pSeg.x > sx) {
                 // down right
                 tilePosX = 0;
                 tilePosY = 0;
+
+                if (sx === 0 && pSeg.y !== sy) {
+                    // tilePosX = 4;
+                    // tilePosY = 1;
+                    tilePosX = 2;
+                    tilePosY = 0;
+                    
+                }
+                console.log(pSeg.y, sy, grid)
+                
             } else {
                 // left right
                 if (pSeg.x < sx || pSeg.x > sx) {
@@ -503,7 +523,7 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
 
                 cancelAnimationFrame(requestAnimationFrameNum);
                 if (isMobileBool) {
-                    enablePageScroll();
+                    // enablePageScroll(snakeGameBlock);
                 }
                 snakeStartButton.innerText = 'ещё раз'
                 snakeStartButton.style.display = '';
@@ -561,11 +581,13 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
     let initialPoint = 0;
     let finalPoint = 0;
 
-    document.addEventListener('touchstart', function(event) {
+    canvas.addEventListener('touchstart', function(event) {
+        event.preventDefault();
         initialPoint = event.changedTouches[0];
     }, false);
     
-    document.addEventListener('touchend', function(event) {
+    canvas.addEventListener('touchend', function(event) {
+        event.preventDefault();
         finalPoint = event.changedTouches[0];
         const xAbs = Math.abs(initialPoint.pageX - finalPoint.pageX);
         const yAbs = Math.abs(initialPoint.pageY - finalPoint.pageY);
@@ -627,7 +649,8 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         snakeParagraph.style.display = 'none';
     
         if (isMobile()) {
-            disablePageScroll();
+            // addScrollableTarget(document.querySelector('body'))
+            // disablePageScroll(snakeGameBlock);
         }
     
         isGameStart = true;
