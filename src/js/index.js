@@ -1,7 +1,9 @@
 import startSnakeGame from './snake';
+import coinAnimation from './coin-animation';
 import smoothscroll from 'smoothscroll-polyfill';
 
 smoothscroll.polyfill();
+coinAnimation();
 
 const appealMainVideo = document.querySelector('.main-video');
 const formButton = document.querySelector('.form__button');
@@ -18,10 +20,10 @@ if (isMobile()) {
 // Игра в змейку-котé
 const canvasSnake = document.querySelector('#snake');
 const img = new Image();
-    img.src = '../img/test6.png';
+    img.src = '../img/tiles.png';
 
 const img2 = new Image();
-img2.src = '../img/test5_1.png';
+img2.src = '../img/extratiles.png';
 
 startSnakeGame(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight, img, img2, false);
 
@@ -51,14 +53,14 @@ formButton.addEventListener('click', (e) => {
                 if (xmlhttp.status == 200) {
                     statusMessageBlock.textContent = 'Мы добавили твой email';
                 } else if (xmlhttp.status == 400) {
-                    statusMessageBlock.textContent = 'Произошла ошибка, попробуй ещё раз';
+                    statusMessageBlock.textContent = 'Произошла ошибка, попробуй еще раз';
                 }
             }
         };
 
         xmlhttp.send('email=' + formData.get('email'));
     } else {
-        statusMessageBlock.textContent = 'Неправильно введен email, попробуй ещё раз';
+        statusMessageBlock.textContent = 'Неправильно введен email, попробуй еще раз';
     }
     
 });
@@ -75,7 +77,7 @@ window.onload = () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const video = entry.target;
-
+                video.controls = false;
                 video.play();
                 observer.unobserve(video);
             }

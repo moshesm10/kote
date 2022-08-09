@@ -7,6 +7,10 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
+    function isIos() {
+        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
     const isMobileBool = isMobile();
 
     const canvas = document.getElementById('snake');
@@ -35,8 +39,19 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         return context.drawImage(img, tpx * 128, tpy * 128, 128, 128, sx, sy, grid, grid);
     }
 
-    const addTileToCanvas147 = (tpx, tpy, sx, sy) => {
-        return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx, sy, grid, grid);
+    const addTileToCanvas147 = (tpx, tpy, sx, sy, direction) => {
+        if (direction == 'right') {
+            return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx, sy - 9, grid + 10, grid + 9);
+        }
+        if (direction == 'left') {
+            return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx - 10, sy - 9, grid + 10, grid + 9);
+        }
+        if (direction == 'top') {
+            return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx - 10, sy - 9, grid + 10, grid + 9);
+        }
+        if (direction == 'down') {
+            return context.drawImage(img2, tpx * 147, tpy * 147, 147, 147, sx - 10, sy, grid + 10, grid + 9);
+        }
     }
 
     let canvasWidth = getClosestInteger(width, grid);
@@ -62,7 +77,7 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         dx: grid,
         dy: 0,
         cells: [],
-        maxCells: 10,
+        maxCells: 3,
         direction: 'right',
         firstKeyEvent: 0
     };
@@ -77,8 +92,8 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
 
     let apple = {
         // Начальные координаты яблока
-        x: getRandomInt(0, canvasWidth / grid) * grid,
-        y: getRandomInt(0, canvasHeight / grid) * grid
+        x: getRandomInt(2, (canvasWidth / grid)) * grid,
+        y: getRandomInt(2, (canvasHeight / grid)) * grid
     };
 
     const initGameSettings = (width, height) => {
@@ -112,8 +127,8 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         speed = 10;
         snake.direction = 'right';
         // Ставим яблочко в случайное место
-        apple.x = getRandomInt(0, canvasWidth / grid) * grid;
-        apple.y = getRandomInt(0, canvasHeight / grid) * grid;
+        apple.x = getRandomInt(2, (canvasWidth / grid)) * grid
+        apple.y = getRandomInt(2, (canvasHeight / grid)) * grid
 
         if (!isGameStart) {
             for (let i = 0; i < 4; i++) {
@@ -122,9 +137,11 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
         }
     }
 
-    window.addEventListener('resize', () => {
-        initGameSettings(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
-    });
+    if (!isIos()) {
+        window.addEventListener('resize', () => {
+            initGameSettings(snakeGameBlock.clientWidth, snakeGameBlock.clientHeight);
+        });
+    }
 
     // Игровой цикл
     const loop = () => {
@@ -276,30 +293,94 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
                 // left right
                 tilePosX = 1;
                 tilePosY = 0;
-                // console.log('left right')
+
             } else if (pSeg.x < sx && nSeg.y > sy || nSeg.x < sx && pSeg.y > sy) {
                 // left down
                 tilePosX = 2;
                 tilePosY = 0;
+                
+                // через левый край вниз
+                if (sx === canvasWidth - grid && pSeg.y !== sy && nSeg.x == 0) {
+                    tilePosX = 0;
+                    tilePosY = 0;
+                }
 
-                // console.log('left down')
+                // через нижний край налево
+                if (sy === 0 && pSeg.x !== sx && nSeg.y == canvasHeight - grid) {
+                    tilePosX = 2;
+                    tilePosY = 2;
+                }
+
+                // правый край -> вверх -> направо
+                if (pSeg.x === 0 && nSeg.x === sx && sx === canvasWidth - grid) {
+                    tilePosX = 0;
+                    tilePosY = 0;
+                }
+
+                // верхний край -> направо -> вверх
+                if (nSeg.y === 0 && pSeg.x === sx && sy === 0 && pSeg.y === canvasHeight - grid) {
+                    tilePosX = 2;
+                    tilePosY = 2;
+                }
+
             } else if (pSeg.y < sy && nSeg.y > sy || nSeg.y < sy && pSeg.y > sy) {
                 // up down
                 tilePosX = 2;
                 tilePosY = 1;
                 
-                // console.log('up down', pSeg.y, sy)
             } else if (pSeg.y < sy && nSeg.x < sx || nSeg.y < sy && pSeg.x < sx) {
                 // top left
                 tilePosX = 2;
                 tilePosY = 2;
-                // console.log('top left')
+                
+                // через верхний край налево
+                if (sx == nSeg.x && sy === canvasHeight - grid && nSeg.y == 0) {
+                    tilePosX = 2;
+                    tilePosY = 0;
+                }
+
+                // через левый край вверх
+                if (sx === canvasWidth - grid && pSeg.y !== sy && nSeg.x == 0) {
+                    tilePosX = 0;
+                    tilePosY = 1;
+                }
+
+                // нижний край -> направо -> вниз
+                if (pSeg.y === 0 && pSeg.x === sx && sy === canvasHeight - grid) {
+                    tilePosX = 2;
+                    tilePosY = 0;
+                }
+                
+                // правый край -> вниз -> направо
+                if (pSeg.x === 0 && nSeg.x === sx && sx === canvasWidth - grid) {
+                    tilePosX = 0;
+                    tilePosY = 1;
+                }
             } else if (pSeg.x > sx && nSeg.y < sy || nSeg.x > sx && pSeg.y < sy) {
                 //right up
                 tilePosX = 0;
                 tilePosY = 1;
+                
+                // через верхний край направо
+                if (sx == nSeg.x && sy === canvasHeight - grid && nSeg.y == 0) {
+                    tilePosX = 0;
+                    tilePosY = 0;
+                }
 
-                if (sx === 0 && pSeg.y !== sy) {
+                // через правый край наверх
+                if (sx === 0 && pSeg.y !== sy && nSeg.x == canvasWidth - grid) {
+                    tilePosX = 2;
+                    tilePosY = 2;
+                }
+
+                // нижний край -> налево -> вниз
+                if (pSeg.y === 0 && pSeg.x === sx && sy === canvasHeight - grid) {
+                    tilePosX = 0;
+                    tilePosY = 0;
+                }
+
+                // левый край -> вниз -> налево
+                if (nSeg.x === 0 && pSeg.y === sy && sx === 0 && pSeg.x === canvasWidth - grid) {
                     tilePosX = 2;
                     tilePosY = 2;
                 }
@@ -307,16 +388,30 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
                 // down right
                 tilePosX = 0;
                 tilePosY = 0;
+                
+                // через нижний край направо
+                if (sy === 0 && pSeg.x !== sx && nSeg.y == canvasHeight - grid) {
+                    tilePosX = 0;
+                    tilePosY = 1;
+                }
 
-                if (sx === 0 && pSeg.y !== sy) {
-                    // tilePosX = 4;
-                    // tilePosY = 1;
+                // через правый край вниз
+                if (sx === 0 && pSeg.y !== sy && nSeg.x == canvasWidth - grid) {
                     tilePosX = 2;
                     tilePosY = 0;
-                    
                 }
-                console.log(pSeg.y, sy, grid)
-                
+
+                // левый край -> вверх -> налево
+                if (nSeg.x === 0 && pSeg.y === sy && sx === 0 && pSeg.x === canvasWidth - grid) {
+                    tilePosX = 2;
+                    tilePosY = 0;
+                }
+
+                // верхний край -> налево -> вверх
+                if (nSeg.y === 0 && pSeg.x === sx && sy === 0 && pSeg.y === canvasHeight - grid) {
+                    tilePosX = 0;
+                    tilePosY = 1;
+                }
             } else {
                 // left right
                 if (pSeg.x < sx || pSeg.x > sx) {
@@ -339,7 +434,7 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
                     tilePosX = 1;
                 }
 
-                addTileToCanvas147(tilePosX, tilePosY, sx, sy)
+                addTileToCanvas147(tilePosX, tilePosY, sx, sy, snake.direction)
             } 
             else {
                 addTileToCanvas(tilePosX, tilePosY, sx, sy);
@@ -361,8 +456,8 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
             // увеличиваем длину змейки
             snake.maxCells++;
             // Рисуем новое яблоко
-            apple.x = getRandomInt(0, canvasWidth / grid) * grid;
-            apple.y = getRandomInt(0, canvasHeight/ grid) * grid;
+            apple.x = getRandomInt(2, (canvasWidth / grid)) * grid;
+            apple.y = getRandomInt(2, (canvasHeight / grid)) * grid;
         }
 
         // Проверяем, не столкнулась ли змея сама с собой
@@ -461,34 +556,132 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
                             }
                         }
                     } else {
-                        // body 
+                        /// body 
                         let pSeg = segments[index - 1];
                         let nSeg = segments[index + 1];
                         if (pSeg.x < sx && nSeg.x > sx || nSeg.x < sx && pSeg.x > sx) {
                             // left right
                             tilePosX = 1;
                             tilePosY = 0;
-                            
+
                         } else if (pSeg.x < sx && nSeg.y > sy || nSeg.x < sx && pSeg.y > sy) {
                             // left down
                             tilePosX = 2;
                             tilePosY = 0;
+                            
+                            // через левый край вниз
+                            if (sx === canvasWidth - grid && pSeg.y !== sy && nSeg.x == 0) {
+                                tilePosX = 0;
+                                tilePosY = 0;
+                            }
+
+                            // через нижний край налево
+                            if (sy === 0 && pSeg.x !== sx && nSeg.y == canvasHeight - grid) {
+                                tilePosX = 2;
+                                tilePosY = 2;
+                            }
+
+                            // правый край -> вверх -> направо
+                            if (pSeg.x === 0 && nSeg.x === sx && sx === canvasWidth - grid) {
+                                tilePosX = 0;
+                                tilePosY = 0;
+                            }
+
+                            // верхний край -> направо -> вверх
+                            if (nSeg.y === 0 && pSeg.x === sx && sy === 0 && pSeg.y === canvasHeight - grid) {
+                                tilePosX = 2;
+                                tilePosY = 2;
+                            }
+
                         } else if (pSeg.y < sy && nSeg.y > sy || nSeg.y < sy && pSeg.y > sy) {
                             // up down
                             tilePosX = 2;
                             tilePosY = 1;
+                            
                         } else if (pSeg.y < sy && nSeg.x < sx || nSeg.y < sy && pSeg.x < sx) {
                             // top left
                             tilePosX = 2;
                             tilePosY = 2;
+                            
+                            // через верхний край налево
+                            if (sx == nSeg.x && sy === canvasHeight - grid && nSeg.y == 0) {
+                                tilePosX = 2;
+                                tilePosY = 0;
+                            }
+
+                            // через левый край вверх
+                            if (sx === canvasWidth - grid && pSeg.y !== sy && nSeg.x == 0) {
+                                tilePosX = 0;
+                                tilePosY = 1;
+                            }
+
+                            // нижний край -> направо -> вниз
+                            if (pSeg.y === 0 && pSeg.x === sx && sy === canvasHeight - grid) {
+                                tilePosX = 2;
+                                tilePosY = 0;
+                            }
+                            
+                            // правый край -> вниз -> направо
+                            if (pSeg.x === 0 && nSeg.x === sx && sx === canvasWidth - grid) {
+                                tilePosX = 0;
+                                tilePosY = 1;
+                            }
                         } else if (pSeg.x > sx && nSeg.y < sy || nSeg.x > sx && pSeg.y < sy) {
                             //right up
                             tilePosX = 0;
                             tilePosY = 1;
+                            
+                            // через верхний край направо
+                            if (sx == nSeg.x && sy === canvasHeight - grid && nSeg.y == 0) {
+                                tilePosX = 0;
+                                tilePosY = 0;
+                            }
+
+                            // через правый край наверх
+                            if (sx === 0 && pSeg.y !== sy && nSeg.x == canvasWidth - grid) {
+                                tilePosX = 2;
+                                tilePosY = 2;
+                            }
+
+                            // нижний край -> налево -> вниз
+                            if (pSeg.y === 0 && pSeg.x === sx && sy === canvasHeight - grid) {
+                                tilePosX = 0;
+                                tilePosY = 0;
+                            }
+
+                            // левый край -> вниз -> налево
+                            if (nSeg.x === 0 && pSeg.y === sy && sx === 0 && pSeg.x === canvasWidth - grid) {
+                                tilePosX = 2;
+                                tilePosY = 2;
+                            }
                         } else if (pSeg.y > sy && nSeg.x > sx || nSeg.y > sy && pSeg.x > sx) {
                             // down right
                             tilePosX = 0;
                             tilePosY = 0;
+                            
+                            // через нижний край направо
+                            if (sy === 0 && pSeg.x !== sx && nSeg.y == canvasHeight - grid) {
+                                tilePosX = 0;
+                                tilePosY = 1;
+                            }
+
+                            // через правый край вниз
+                            if (sx === 0 && pSeg.y !== sy && nSeg.x == canvasWidth - grid) {
+                                tilePosX = 2;
+                                tilePosY = 0;
+                            }
+
+                            // левый край -> вверх -> налево
+                            if (nSeg.x === 0 && pSeg.y === sy && sx === 0 && pSeg.x === canvasWidth - grid) {
+                                tilePosX = 2;
+                                tilePosY = 0;
+                            }
+
+                            // верхний край -> налево -> вверх
+                            if (nSeg.y === 0 && pSeg.x === sx && sy === 0 && pSeg.y === canvasHeight - grid) {
+                                tilePosX = 0;
+                                tilePosY = 1;
+                            }
                         } else {
                             // left right
                             if (pSeg.x < sx || pSeg.x > sx) {
@@ -518,14 +711,14 @@ const startSnakeGame = (width, height, img, img2, isGameStart) => {
                 speed = 10;
                 snake.direction = 'right';
                 // Ставим яблочко в случайное место
-                apple.x = getRandomInt(0, canvasWidth / grid) * grid;
-                apple.y = getRandomInt(0, canvasHeight / grid) * grid;
+                apple.x = getRandomInt(2, (canvasWidth / grid)) * grid;
+                apple.y = getRandomInt(2, (canvasHeight / grid)) * grid;
 
                 cancelAnimationFrame(requestAnimationFrameNum);
                 if (isMobileBool) {
                     // enablePageScroll(snakeGameBlock);
                 }
-                snakeStartButton.innerText = 'ещё раз'
+                snakeStartButton.innerText = 'еще раз'
                 snakeStartButton.style.display = '';
             }
         }

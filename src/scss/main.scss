@@ -107,7 +107,7 @@ h2 {
 }
 
 .email {
-    padding: 0.5em 1em;
+    padding: 0 1em;
     font-family: 'als-gorizont', sans-serif;
     font-weight: 800;
     font-size: 3em;
@@ -116,9 +116,13 @@ h2 {
     border: 0.02em solid #8C8C8C;
     border-radius: 1em;
     box-sizing: border-box;
-    line-height: 1.1;
+    line-height: 1.33;
 
     &::placeholder {
         color: #c9c9c9;
+    }
+
+    @media (max-width: $screen-640) {
+        line-height: 2;
     }
 }
